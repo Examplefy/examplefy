@@ -211,6 +211,11 @@ header .header-content .header-content-inner p {
     color: rgba(255,255,255,.7);
 }
 
+/* CAL: Adding to allow forms to be put into a header-content-inner */
+header .header-content .header-content-inner input {
+  color: black
+}
+
 @media(min-width:768px) {
     header {
         min-height: 100%;
