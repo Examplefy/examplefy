@@ -1,0 +1,8 @@
+rm sqllite_database
+python manage.py migrate
+python manage.py createsuperuser <<EOF
+calpeyser
+calpeyser@gmail.com
+123321
+123321
+EOF

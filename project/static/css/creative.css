@@ -52,7 +52,19 @@ p {
 }
 
 .bg-primary {
-    background-color: #f05f40;
+    background-color: #8674B8;
+}
+
+.bg-primary-2 {
+    background-color: #614B9B;
+}
+
+.bg-primary-3 {
+  background-color: #614B9B;
+}
+
+.bg-primary-4 {
+  background-color: #614B9B;
 }
 
 .bg-dark {
@@ -213,6 +225,10 @@ header .header-content .header-content-inner p {
 
 /* CAL: Adding to allow forms to be put into a header-content-inner */
 header .header-content .header-content-inner input {
+  color: black
+}
+
+header .header-content input {
   color: black
 }
 

@@ -19,11 +19,41 @@
                     <h2 class="section-heading">Watch examples of pretty much anything.</h2>
                     <hr class="light">
                     <p class="text-faded">Search for short tutorials to learn how to solve any kind of exercise.</p>
-                    <a href="#" class="btn btn-default btn-xl">Get Started!</a>
+
+                    <form method="get" action="/#about">
+                        {{ form.q }}
+                        <input type="submit" value="Search" class="btn">
+                        <input type="hidden" name="models" value="examplefy.example">
+                    </form>
                 </div>
             </div>
         </div>
     </section>
+
+  {% if query %}
+    <section class="bg-primary-2" id="results">
+      <div class="container">
+                    <h3>Results</h3>
+
+                    {% for result in object_list %}
+                        <p>
+                            <a href="{{ result.object.get_absolute_url }}">{{ result.object.title }}</a>
+                        </p>
+                    {% empty %}
+                        <p>No results were found.</p>
+                    {% endfor %}
+
+                    {% if page.has_previous or page.has_next %}
+                        <div>
+                            {% if page.has_previous %}<a href="?q={{ query }}&amp;page={{ page.previous_page_number }}">{% endif %}&laquo; Previous{% if page.has_previous %}</a>{% endif %}
+                            |
+                            {% if page.has_next %}<a href="?q={{ query }}&amp;page={{ page.next_page_number }}">{% endif %}Next &raquo;{% if page.has_next %}</a>{% endif %}
+                        </div>
+                    {% endif %}
+            </form>
+      </div>
+    </section>
+  {% endif %}
 
 
     <section id="contact">
