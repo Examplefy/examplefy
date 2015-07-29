@@ -12,13 +12,21 @@
         </div>
     </header>
 
+
+
     <section class="bg-primary" id="about">
+        <div class="container text-center">
+          <h3 class="section-heading">With Examplefy, you can search our database of solved problems or ask a question of your own.</h2>
+          <hr class="light">
+          <br>
+        </div>
+
         <div class="container">
             <div class="row">
-                <div class="col-lg-8 col-lg-offset-2 text-center">
-                    <h2 class="section-heading">Watch examples of pretty much anything.</h2>
+                <div class="col-lg-6 text-center">
+                    <h2 class="section-heading">Ask our database</h2>
                     <hr class="light">
-                    <p class="text-faded">Search for short tutorials to learn how to solve any kind of exercise.</p>
+                    <p class="text-faded">Search for topics or concepts</p>
 
                     <form method="get" action="/#about">
                         {{ form.q }}
@@ -26,6 +34,12 @@
                         <input type="hidden" name="models" value="examplefy.example">
                     </form>
                 </div>
+                <div class="col-lg-6 text-center">
+                  <h2 class="section-heading">Ask our tutors.</h2>
+                  <hr class="light">
+                  <p class="text-faded">Submit an example, and we'll take a crack at it.</p>
+                </div>
+
             </div>
         </div>
     </section>
