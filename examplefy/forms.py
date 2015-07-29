@@ -2,11 +2,10 @@ from django.forms import ModelForm, ValidationError
 from django import forms
 from django.core import urlresolvers
 from django.db import models
-from examplefy.models import Tag, Example
+from examplefy.models import Example, Topic
 
-# Not using this right now
-class SearchForm(forms.Form):
+class TopicForm(forms.Form):
     """
-    A form used to search the database for examples
+    A form used to ask a what topic a question will be
     """
-    search_term = forms.CharField(max_length=100)
+    topic = forms.ModelChoiceField(queryset=Topic.objects.all(), empty_label="(Nothing)")

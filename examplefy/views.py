@@ -1,9 +1,11 @@
 from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseRedirect
 from django.contrib.auth import authenticate, login, logout
+from django.views.generic import View
 from haystack.forms import SearchForm, ModelSearchForm
 from haystack.generic_views import SearchView
 from .models import Example
+from .forms import *
 
 def homepage(request):
     if request.method == "POST":
@@ -25,3 +27,7 @@ def search(request):
 class ExamplefySearchView(SearchView):
     template_name = 'index.html'
     form_class = SearchForm
+
+def ask_view(request):
+    form = TopicForm()
+    return render(request, 'ask.html', {"form": form})

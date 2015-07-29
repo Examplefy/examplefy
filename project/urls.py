@@ -9,7 +9,7 @@ from haystack.generic_views import SearchView
 
 from django.views.generic import TemplateView
 import examplefy.views
-from examplefy.views import ExamplefySearchView
+from examplefy.views import *
 
 # Basics
 urlpatterns = patterns('',
@@ -26,9 +26,8 @@ urlpatterns = patterns('',
     TemplateView.as_view(template_name="example.html"),
      name='example'),
 
-    url(r'^test/$',
-    TemplateView.as_view(template_name="test.html"),
-     name='test'),
+    # Asking a question
+    url(r'^ask/$', ask_view, name='ask')
 
 )
 

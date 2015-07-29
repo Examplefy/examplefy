@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block content %}
+
+    <header>
+        <div class="header-content">
+            <div class="header-content-inner">
+                <h1>Ask us a question</h1>
+                <hr>
+                <p>What is the topic of your question?</p>
+                <form method="get" action="/ask">
+                    {{ form.topic }}
+                    <br><br>
+                    <input type="submit" value="Search" class="btn">
+                </form>
+            </div>
+        </div>
+    </header>
+
+{% endblock %}
