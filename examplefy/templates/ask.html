@@ -6,12 +6,19 @@
             <div class="header-content-inner">
                 <h1>Ask us a question</h1>
                 <hr>
-                <p>What is the topic of your question?</p>
-                <form method="get" action="/ask">
-                    {{ form.topic }}
-                    <br><br>
-                    <input type="submit" value="Search" class="btn">
-                </form>
+                {% if entered_data %}
+                <div class="btn-group">
+                   <button type="button" class="btn btn-primary dropdown-toggle"
+                      data-toggle="dropdown">
+                      Choose Topic <span class="caret"></span>
+                   </button>
+                   <ul class="dropdown-menu" role="menu">
+                     {% for topic in entered_data.topics %}
+                     <li><a href="#">{{ topic }}</li>
+                     {% endfor %}
+                   </ul>
+                </div>
+                {% endif %}
             </div>
         </div>
     </header>

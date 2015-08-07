@@ -4,7 +4,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.views.generic import View
 from haystack.forms import SearchForm, ModelSearchForm
 from haystack.generic_views import SearchView
-from .models import Example
+from .models import Example, Topic
 from .forms import *
 
 def homepage(request):
@@ -30,4 +30,6 @@ class ExamplefySearchView(SearchView):
 
 def ask_view(request):
     form = TopicForm()
-    return render(request, 'ask.html', {"form": form})
+    entered_data = {}
+    entered_data["topics"] = Topic.objects.all()
+    return render(request, 'ask.html', {"form": form, "entered_data": entered_data})
