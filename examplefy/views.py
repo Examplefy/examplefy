@@ -31,7 +31,7 @@ class ExamplefySearchView(SearchView):
 def ask_view(request):
     data_for_form = {}
     data_for_form["topics"] = Topic.objects.all()
-
+    print data_for_form["topics"]
     return render(request, 'ask.html', {"data": data_for_form})
 
     """

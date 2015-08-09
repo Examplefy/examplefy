@@ -6,14 +6,27 @@
             <div class="header-content-inner">
                 <h1>Ask us a question</h1>
                 <hr>
-                <div class="btn-group">
-                  <button type="button" class="btn btn-primary dropdown-toggle">
+                <div class="btn-group" id="topic_group">
+                  <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" id="topic_button">
                     Chose a Topic
                   </button>
                   <ul class="dropdown-menu" role="menu">
-
+                    {% for topic in data.topics %}
+                      <li class="topic_list_element" id="{{ topic }}"><a>{{ topic }}</a></li>
+                    {% endfor %}
                   </ul>
-                </div> <!-- btn-group -->
+                </div> <!-- topic_group -->
+
+                <br><br><br>
+
+                <div class="btn-group" id="concept_group">
+
+                </div> <!-- concept_group -->
+
+
+                <div id="test">
+
+                </div> <!-- test -->
             </div>
         </div>
     </header>
