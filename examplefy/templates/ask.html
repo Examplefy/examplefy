@@ -1,26 +1,68 @@
 {% extends "base.html" %}
 {% block content %}
+  <!-- pass context to JS as a global variable -->
+  <script type="text/javascript">window.DATA = JSON.parse("{{ data.json }}".replace(/&quot;/g,"\""))</script>
 
     <header>
         <div class="header-content">
             <div class="header-content-inner">
-                <h1>Ask us a question</h1>
+                <h1 style="color:white">Ask us a question</h1>
                 <hr>
-                {% if entered_data %}
-                <div class="btn-group">
-                   <button type="button" class="btn btn-primary dropdown-toggle"
-                      data-toggle="dropdown">
-                      Choose Topic <span class="caret"></span>
-                   </button>
-                   <ul class="dropdown-menu" role="menu">
-                     {% for topic in entered_data.topics %}
-                     <li><a href="#">{{ topic }}</li>
-                     {% endfor %}
-                   </ul>
-                </div>
-                {% endif %}
+                <div class="btn-group" id="topic_group">
+                  <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" id="topic_button">
+                    Chose a Topic
+                  </button>
+                  <ul class="dropdown-menu" role="menu">
+                    {% for topic in data.topics %}
+                      <li class="topic_list_element" id="{{ topic }}"><a>{{ topic }}</a></li>
+                    {% endfor %}
+                  </ul>
+                </div> <!-- topic_group -->
+
+                <br><br><br>
+
+                <div class="btn-group" id="concept_group">
+                </div> <!-- concept_group -->
+
+                <div id="text_div">
+                </div> <!-- text div -->
             </div>
         </div>
     </header>
 
 {% endblock %}
+
+<!--
+{% if entered_data %}
+  {% if entered_data.state == "topic" %}
+  <div class="btn-group">
+     <button type="button" class="btn btn-primary dropdown-toggle"
+        data-toggle="dropdown">
+        Choose Topic <span class="caret"></span>
+     </button>
+     <ul class="dropdown-menu" role="menu">
+       {% for topic in entered_data.topics %}
+       <li><a href="/ask?topic={{ topic }}">{{ topic }}</li>
+       {% endfor %}
+     </ul>
+  </div>
+  {% else %}
+  <p>{{ entered_data.topic }}</p>
+  {% endif %}
+
+  {% if entered_data.state == "concept" %}
+  <div class="btn-group">
+     <button type="button" class="btn btn-primary dropdown-toggle"
+        data-toggle="dropdown">
+        Choose Concept <span class="caret"></span>
+     </button>
+     <ul class="dropdown-menu" role="menu">
+       {{ entered_data.debug }}
+       {% for concept in entered_data.concepts %}
+       <li><a href="/ask?topic={{ topic }}&concept={{ concept }}">{{ concept }}</li>
+       {% endfor %}
+     </ul>
+  </div>
+  {% endif %}
+{% endif %}
+-->
