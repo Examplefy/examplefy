@@ -13,24 +13,32 @@ $('li.topic_list_element').on('click', function(e) {
     var concept = window.DATA["concepts"][this.id][i]
     concept_list.append('<li class="concept_list_element" id="' + concept + '"><a>' + concept + '</a></li>')
   }
-  concept_button.hide()
   concept_group.append(concept_button)
   concept_group.append(concept_list)
-  concept_button.fadeIn(2000)
+  bind_concept()
 })
 
-$('li.concept_list_element').on('click', function(e) {
-  // Change appearance of concept button
-  var concept_button = $('#concept_button')
-  concept_button.text("Concept: " + this.id)
-  concept_button.attr('disabled', true)
 
-  // Make the text box available
-  var text_div = $('#text_div')
-  var text_area = $('<textarea rows="20" cols="100"></textarea>')
-  var submit_button = $('<button type="button" class="btn btn-primary" id="Submit">Submit your question</button>')
 
-  text_div.append(text_area)
-  text_div.append("<br><br>")
-  text_div.append(submit_button)
-})
+function bind_concept() {
+  $('li.concept_list_element').on('click', function(e) {
+    // Change appearance of concept button
+    var concept_button = $('#concept_button')
+    concept_button.text("Concept: " + this.id)
+    concept_button.attr('disabled', true)
+
+    // Make the text box available
+    var text_div = $('#text_div')
+    var text_area = $('<textarea rows="14" cols="50"></textarea>')
+    var submit_button = $('<button type="button" class="btn btn-primary" id="Submit" onclick="submit()">Submit your question</button>')
+
+    text_div.append("<br><br>")
+    text_div.append(text_area)
+    text_div.append("<br><br>")
+    text_div.append(submit_button)
+  })
+}
+
+function submit() {
+  alert("Submitted!")
+}
