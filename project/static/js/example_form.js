@@ -7,22 +7,30 @@ $('li.topic_list_element').on('click', function(e) {
 
   // Make concept selection available
   var concept_group = $('#concept_group')
-  var concept_button = $('<button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" id="topic_button">Chose a Topic</button>')
+  var concept_button = $('<button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" id="concept_button">Chose a Concept</button>')
   var concept_list = $('<ul class="dropdown-menu" role="menu"></ul>')
-  concept_list.append('<li class="concept_list_element" id="DUMMY"><a>DUMMY</a></li>')
-  //concept_button.hide()
+  for (i = 0; i < window.DATA["concepts"][this.id].length; i++) {
+    var concept = window.DATA["concepts"][this.id][i]
+    concept_list.append('<li class="concept_list_element" id="' + concept + '"><a>' + concept + '</a></li>')
+  }
+  concept_button.hide()
   concept_group.append(concept_button)
   concept_group.append(concept_list)
-  //concept_button.delay(1000).fadeIn(2000)
+  concept_button.fadeIn(2000)
 })
 
-/*
-<button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" id="topic_button">
-  Chose a Topic
-</button>
-<ul class="dropdown-menu" role="menu">
-  {% for topic in data.topics %}
-    <li class="topic_list_element" id="{{ topic }}"><a>{{ topic }}</a></li>
-  {% endfor %}
-</ul>
-*/
+$('li.concept_list_element').on('click', function(e) {
+  // Change appearance of concept button
+  var concept_button = $('#concept_button')
+  concept_button.text("Concept: " + this.id)
+  concept_button.attr('disabled', true)
+
+  // Make the text box available
+  var text_div = $('#text_div')
+  var text_area = $('<textarea rows="20" cols="100"></textarea>')
+  var submit_button = $('<button type="button" class="btn btn-primary" id="Submit">Submit your question</button>')
+
+  text_div.append(text_area)
+  text_div.append("<br><br>")
+  text_div.append(submit_button)
+})

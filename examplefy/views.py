@@ -6,6 +6,7 @@ from haystack.forms import SearchForm, ModelSearchForm
 from haystack.generic_views import SearchView
 from .models import Example, Topic, Concept
 from .forms import *
+import json
 
 def homepage(request):
     if request.method == "POST":
@@ -29,10 +30,14 @@ class ExamplefySearchView(SearchView):
     form_class = SearchForm
 
 def ask_view(request):
-    data_for_form = {}
-    data_for_form["topics"] = Topic.objects.all()
-    print data_for_form["topics"]
-    return render(request, 'ask.html', {"data": data_for_form})
+    data = {}
+    data["topics"] = [topic.name for topic in list(Topic.objects.all())]
+    data["concepts"] = {}
+    for topic in data["topics"]:
+        data["concepts"][topic] = [concept.name for concept in list(Concept.objects.all().filter(topic__name=topic))]
+    data["json"] = json.dumps(data)
+    print data["json"]
+    return render(request, 'ask.html', {"data": data})
 
     """
     form = TopicForm()
