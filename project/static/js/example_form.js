@@ -1,5 +1,8 @@
 // Topic selection
 $('li.topic_list_element').on('click', function(e) {
+  // record selection
+  record("topic", this.id)
+
   // Change appearance of topic button
   var topic_button = $('#topic_button')
   topic_button.text("Topic: " + this.id)
@@ -22,6 +25,8 @@ $('li.topic_list_element').on('click', function(e) {
 
 function bind_concept() {
   $('li.concept_list_element').on('click', function(e) {
+    // record selection
+    record("concept", this.id)
     // Change appearance of concept button
     var concept_button = $('#concept_button')
     concept_button.text("Concept: " + this.id)
@@ -39,6 +44,16 @@ function bind_concept() {
   })
 }
 
-function submit() {
-  alert("Submitted!")
+function submit(topic, concept) {
+  record("text", $('textarea')[0].value)
+  var data = window.DATA.js_store
+  $.get("/add_example/", data)
+}
+
+window.DATA["js_store"] = {}
+function record(key, value) {
+  window.DATA["js_store"][key] = value
+}
+function retrieve(key) {
+  return window.DATA["js_store"][key]
 }
