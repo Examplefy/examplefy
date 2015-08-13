@@ -4,7 +4,7 @@
   <script type="text/javascript">window.DATA = JSON.parse("{{ data.json }}".replace(/&quot;/g,"\""))</script>
 
     <header>
-        <div class="header-content">
+        <div class="header-content" id="ask_form">
             <div class="header-content-inner">
                 <h1 style="color:white">Ask us a question</h1>
                 <hr>
@@ -28,41 +28,9 @@
                 </div> <!-- text div -->
             </div>
         </div>
+        <div class="header-content" id="confirm_div">
+          <form method="post" action="/add_example" id="confirm_form">{% csrf_token %}</form>
+        </div>
     </header>
 
 {% endblock %}
-
-<!--
-{% if entered_data %}
-  {% if entered_data.state == "topic" %}
-  <div class="btn-group">
-     <button type="button" class="btn btn-primary dropdown-toggle"
-        data-toggle="dropdown">
-        Choose Topic <span class="caret"></span>
-     </button>
-     <ul class="dropdown-menu" role="menu">
-       {% for topic in entered_data.topics %}
-       <li><a href="/ask?topic={{ topic }}">{{ topic }}</li>
-       {% endfor %}
-     </ul>
-  </div>
-  {% else %}
-  <p>{{ entered_data.topic }}</p>
-  {% endif %}
-
-  {% if entered_data.state == "concept" %}
-  <div class="btn-group">
-     <button type="button" class="btn btn-primary dropdown-toggle"
-        data-toggle="dropdown">
-        Choose Concept <span class="caret"></span>
-     </button>
-     <ul class="dropdown-menu" role="menu">
-       {{ entered_data.debug }}
-       {% for concept in entered_data.concepts %}
-       <li><a href="/ask?topic={{ topic }}&concept={{ concept }}">{{ concept }}</li>
-       {% endfor %}
-     </ul>
-  </div>
-  {% endif %}
-{% endif %}
--->

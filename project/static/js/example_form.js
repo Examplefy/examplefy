@@ -34,20 +34,45 @@ function bind_concept() {
 
     // Make the text box available
     var text_div = $('#text_div')
-    var text_area = $('<textarea rows="14" cols="50"></textarea>')
-    var submit_button = $('<button type="button" class="btn btn-primary" id="Submit" onclick="submit()">Submit your question</button>')
+    var text_area = $('<textarea id="example_question" rows="14" cols="50"></textarea>')
+    var submit_button = $('<button type="button" class="btn btn-primary" id="Submit">Submit your question</button>')
 
     text_div.append("<br><br>")
     text_div.append(text_area)
     text_div.append("<br><br>")
     text_div.append(submit_button)
+    bind_confirm()
   })
 }
 
-function submit(topic, concept) {
-  record("text", $('textarea')[0].value)
-  var data = window.DATA.js_store
-  $.get("/add_example/", data)
+function bind_confirm() {
+  $('#Submit').on('click', function(e) {
+    record("text", $('textarea.example_question').value)
+    $('#ask_form').fadeOut(1000)
+    var confirm_div = $('#confirm_div')
+    var inner_text = $('<div class="header-content-inner"></div>')
+    var topic_text = $('<h3 style="color:white">Topic: ' + retrieve("topic") + '</h3>')
+    var concept_text = $('<h3 style="color:white">Concept: ' + retrieve("concept") + '</h3>')
+
+    var confirm_form = $('#confirm_form')
+    confirm_form.append($('<input type="submit" value="Submit Example" class="btn">'))
+    confirm_form.append($('<input type="hidden" name="topic" value="' + retrieve("topic") + '">'))
+
+    // dramatic entracne
+    topic_text.hide()
+    concept_text.hide()
+    confirm_form.hide()
+    inner_text.append(topic_text)
+    inner_text.append("<br>")
+    inner_text.append(concept_text)
+    inner_text.append("<br>")
+    inner_text.append(confirm_form)
+    confirm_div.prepend(inner_text)
+
+    topic_text.delay(1000).fadeIn(1000)
+    concept_text.delay(1500).fadeIn(1000)
+    confirm_form.delay(2000).fadeIn(1000)
+  })
 }
 
 window.DATA["js_store"] = {}
