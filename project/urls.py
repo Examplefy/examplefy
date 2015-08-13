@@ -27,7 +27,10 @@ urlpatterns = patterns('',
      name='example'),
 
     # Asking a question
-    url(r'^ask/$', ask_view, name='ask')
+    url(r'^ask/$', ask_view, name='ask'),
+
+    # Adding an example
+    url(r'^add_example', add_example_view, name='add_example')
 
 )
 
