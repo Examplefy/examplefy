@@ -8,9 +8,14 @@ $('li.topic_list_element').on('click', function(e) {
   topic_button.text("Topic: " + this.id)
   topic_button.attr('disabled', true)
 
+  // Move topic button
+  move('#topic_button')
+    .add('margin-left', -100)
+    .end();
+
   // Make concept selection available
   var concept_group = $('#concept_group')
-  var concept_button = $('<button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" id="concept_button">Chose a Concept</button>')
+  var concept_button = $('#concept_button')
   var concept_list = $('<ul class="dropdown-menu" role="menu"></ul>')
   for (i = 0; i < window.DATA["concepts"][this.id].length; i++) {
     var concept = window.DATA["concepts"][this.id][i]
@@ -18,6 +23,15 @@ $('li.topic_list_element').on('click', function(e) {
   }
   concept_group.append(concept_button)
   concept_group.append(concept_list)
+
+  // Make concept selection visible
+  concept_button.show()
+  move('#concept_button')
+    .set('opacity', 1.0)
+    .duration("1s")
+    .end();
+
+  // prepare next phase
   bind_concept()
 })
 
@@ -27,10 +41,16 @@ function bind_concept() {
   $('li.concept_list_element').on('click', function(e) {
     // record selection
     record("concept", this.id)
+
     // Change appearance of concept button
     var concept_button = $('#concept_button')
     concept_button.text("Concept: " + this.id)
     concept_button.attr('disabled', true)
+
+    // move concept button
+    move('#concept_button')
+      .translate(100, -72)
+      .end()
 
     // Make the text box available
     var text_div = $('#text_div')
