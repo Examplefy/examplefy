@@ -47,7 +47,8 @@ function bind_concept() {
 
 function bind_confirm() {
   $('#Submit').on('click', function(e) {
-    record("text", $('textarea.example_question').value)
+    record("text", $('textarea')[0].value)
+
     $('#ask_form').fadeOut(1000)
     var confirm_div = $('#confirm_div')
     var inner_text = $('<div class="header-content-inner"></div>')
@@ -56,7 +57,11 @@ function bind_confirm() {
 
     var confirm_form = $('#confirm_form')
     confirm_form.append($('<input type="submit" value="Submit Example" class="btn">'))
+    confirm_form.append($('<input type="hidden" name="concept" value="' + retrieve("concept") + '">'))
     confirm_form.append($('<input type="hidden" name="topic" value="' + retrieve("topic") + '">'))
+    confirm_form.append($('<input type="hidden" name="text" value="' + retrieve("text") + '">'))
+
+
 
     // dramatic entracne
     topic_text.hide()
