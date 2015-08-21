@@ -1,4 +1,5 @@
 // Topic selection
+
 $('li.topic_list_element').on('click', function(e) {
   // record selection
   record("topic", this.id)
@@ -8,9 +9,14 @@ $('li.topic_list_element').on('click', function(e) {
   topic_button.text("Topic: " + this.id)
   topic_button.attr('disabled', true)
 
+  // Move topic button
+  move('#topic_button')
+    .add('margin-left', -100)
+    .end();
+
   // Make concept selection available
   var concept_group = $('#concept_group')
-  var concept_button = $('<button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" id="concept_button">Chose a Concept</button>')
+  var concept_button = $('#concept_button')
   var concept_list = $('<ul class="dropdown-menu" role="menu"></ul>')
   for (i = 0; i < window.DATA["concepts"][this.id].length; i++) {
     var concept = window.DATA["concepts"][this.id][i]
@@ -18,6 +24,15 @@ $('li.topic_list_element').on('click', function(e) {
   }
   concept_group.append(concept_button)
   concept_group.append(concept_list)
+
+  // Make concept selection visible
+  concept_button.show()
+  move('#concept_button')
+    .set('opacity', 1.0)
+    .duration("1s")
+    .end();
+
+  // prepare next phase
   bind_concept()
 })
 
@@ -27,27 +42,42 @@ function bind_concept() {
   $('li.concept_list_element').on('click', function(e) {
     // record selection
     record("concept", this.id)
+
     // Change appearance of concept button
     var concept_button = $('#concept_button')
     concept_button.text("Concept: " + this.id)
     concept_button.attr('disabled', true)
 
-    // Make the text box available
-    var text_div = $('#text_div')
-    var text_area = $('<textarea id="example_question" rows="14" cols="50"></textarea>')
-    var submit_button = $('<button type="button" class="btn btn-primary" id="Submit">Submit your question</button>')
+    // move concept button
+    move('#concept_button')
+      .add('margin-left', -100)
+      .end()
 
-    text_div.append("<br><br>")
-    text_div.append(text_area)
-    text_div.append("<br><br>")
-    text_div.append(submit_button)
+    // Make text box and submit button and title button visible
+    fade_in("#Title")
+
+    $('#example_question').show()
+    move('#example_question')
+      .set('opacity', 1.0)
+      .duration("1s")
+      .end()
+
+    $('#Submit').show()
+    move('#Submit')
+      .set('opacity', 1.0)
+      .duration("1s")
+      .end();
+
     bind_confirm()
   })
 }
 
 function bind_confirm() {
   $('#Submit').on('click', function(e) {
-    record("text", $('textarea')[0].value)
+    record("title", $('#Title').value)
+    record("text", $('#example_question').value)
+
+    alert($('#example_question').value)
 
     $('#ask_form').fadeOut(1000)
     var confirm_div = $('#confirm_div')
@@ -57,9 +87,10 @@ function bind_confirm() {
 
     var confirm_form = $('#confirm_form')
     confirm_form.append($('<input type="submit" value="Submit Example" class="btn">'))
+    confirm_form.append($('<input type="hidden" name="title" value="' + retrieve("title") + '">'))
+    confirm_form.append($('<input type="hidden" name="text" value="' + retrieve("text") + '">'))
     confirm_form.append($('<input type="hidden" name="concept" value="' + retrieve("concept") + '">'))
     confirm_form.append($('<input type="hidden" name="topic" value="' + retrieve("topic") + '">'))
-    confirm_form.append($('<input type="hidden" name="text" value="' + retrieve("text") + '">'))
 
 
 
@@ -78,6 +109,14 @@ function bind_confirm() {
     concept_text.delay(1500).fadeIn(1000)
     confirm_form.delay(2000).fadeIn(1000)
   })
+}
+
+function fade_in(jquery_tag) {
+  $(jquery_tag).show()
+  move(jquery_tag)
+    .set('opacity', 1.0)
+    .duration("1s")
+    .end()
 }
 
 window.DATA["js_store"] = {}

@@ -5,9 +5,9 @@
     <header>
         <div class="header-content" id="ask_form">
             <div class="header-content-inner">
-                <div class="col-lg-2"></div>
-
-                <div class="btn-group col-lg-4 text-center" id="topic_group">
+                <h1 style="color:white" id="header">Ask us a question</h1>
+                <hr id="line">
+                <div class="btn-group" id="topic_group">
                   <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" id="topic_button">
                     Choose a Topic
                   </button>
@@ -16,17 +16,21 @@
                       <li class="topic_list_element" id="{{ topic }}"><a>{{ topic }}</a></li>
                     {% endfor %}
                   </ul>
-                </div>
+                </div> <!-- topic_group -->
 
-                <div class="btn-group col-lg-4 text-center" id="concept_group">
-                  <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" id="concept_button">
-                    Choose a Concept
-                  </button>
-                </div> <!-- concept_group -->
+                <br><br><br>
 
-                <div class="col-lg-2"></div>
+                <div class="btn-group" id="concept_group">
+                  <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" id="concept_button" style="display:none; opacity:0.0">Chose a Concept</button>
+                 </div> <!-- concept_group -->
 
                 <div id="text_div">
+                  <br><br>
+                  <input type="text" id="Title" placeholder="Title" class="form-control" style="display:none; opacity:0.0"></input>
+                  <br>
+                  <textarea id="example_question" rows="14" cols="86" style="display:none; opacity:0.0"></textarea>
+                  <br><br>
+                  <button type="button" class="btn btn-primary" id="Submit" style="display:none; opacity:0.0">Submit your question</button>
                 </div> <!-- text div -->
             </div>
         </div>
