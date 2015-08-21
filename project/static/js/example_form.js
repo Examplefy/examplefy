@@ -1,4 +1,5 @@
 // Topic selection
+
 $('li.topic_list_element').on('click', function(e) {
   // record selection
   record("topic", this.id)
@@ -49,25 +50,34 @@ function bind_concept() {
 
     // move concept button
     move('#concept_button')
-      .translate(100, -72)
+      .add('margin-left', -100)
       .end()
 
-    // Make the text box available
-    var text_div = $('#text_div')
-    var text_area = $('<textarea id="example_question" rows="14" cols="50"></textarea>')
-    var submit_button = $('<button type="button" class="btn btn-primary" id="Submit">Submit your question</button>')
+    // Make text box and submit button and title button visible
+    fade_in("#Title")
 
-    text_div.append("<br><br>")
-    text_div.append(text_area)
-    text_div.append("<br><br>")
-    text_div.append(submit_button)
+    $('#example_question').show()
+    move('#example_question')
+      .set('opacity', 1.0)
+      .duration("1s")
+      .end()
+
+    $('#Submit').show()
+    move('#Submit')
+      .set('opacity', 1.0)
+      .duration("1s")
+      .end();
+
     bind_confirm()
   })
 }
 
 function bind_confirm() {
   $('#Submit').on('click', function(e) {
-    record("text", $('textarea')[0].value)
+    record("title", $('#Title').value)
+    record("text", $('#example_question').value)
+
+    alert($('#example_question').value)
 
     $('#ask_form').fadeOut(1000)
     var confirm_div = $('#confirm_div')
@@ -77,9 +87,10 @@ function bind_confirm() {
 
     var confirm_form = $('#confirm_form')
     confirm_form.append($('<input type="submit" value="Submit Example" class="btn">'))
+    confirm_form.append($('<input type="hidden" name="title" value="' + retrieve("title") + '">'))
+    confirm_form.append($('<input type="hidden" name="text" value="' + retrieve("text") + '">'))
     confirm_form.append($('<input type="hidden" name="concept" value="' + retrieve("concept") + '">'))
     confirm_form.append($('<input type="hidden" name="topic" value="' + retrieve("topic") + '">'))
-    confirm_form.append($('<input type="hidden" name="text" value="' + retrieve("text") + '">'))
 
 
 
@@ -98,6 +109,14 @@ function bind_confirm() {
     concept_text.delay(1500).fadeIn(1000)
     confirm_form.delay(2000).fadeIn(1000)
   })
+}
+
+function fade_in(jquery_tag) {
+  $(jquery_tag).show()
+  move(jquery_tag)
+    .set('opacity', 1.0)
+    .duration("1s")
+    .end()
 }
 
 window.DATA["js_store"] = {}
