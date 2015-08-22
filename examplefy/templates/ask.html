@@ -34,19 +34,51 @@
                     <div class="col-md-2"></div>
 
                   </div> <!-- row -->
+
+                  <br><br>
+
                   <div class="row">
-                    <div class="col-md-3"></div>
+                    <div class="col-md-2"></div>
 
-                    <div class="btn-group col-md-">
+                    <div class="col-md-4 text-center" id="title_group">
+                      <input type="text" class="form-control" id="Title" placeholder="Question Title" aria-describedby="sizing-addon1">
+                    </div>
 
+                    <div class="col-md-4 text-center" id="email_group">
+                      <input type="text" class="form-control" id="Email" placeholder="Your email address" aria-describedby="sizing-addon1">
+                    </div>
+
+                    <div class="col-md-2"></div>
                   </div> <!-- row -->
+
+                  <br><br>
+
+                  <div class="row">
+                    <div class="col-md-12"></div>
+                      <textarea class="form-control" rows="10" id="Content"></textarea>
+                    </div>
+                  </div> <!-- row -->
+
+                  <br><br>
+
+                  <div class="row">
+                    <div class="col-md-12">
+                      <button type="button" class="btn btn-primary" id="submit">
+                        Submit
+                      </button>
+                    </div>
+                  </div> <!-- row -->
+
+                  <div class="row">
+                    <div class="col-md-12" id="error">
+                    </div>
+                  </div>
+
+
                 </div> <!-- container-fluid -->
 
 
             </div>
-        </div>
-        <div class="header-content" id="confirm_div">
-          <form method="post" action="/add_example" id="confirm_form">{% csrf_token %}</form>
         </div>
       </header>
 
