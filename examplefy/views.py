@@ -39,12 +39,14 @@ def ask_view(request):
     return render(request, 'ask.html', {"data": data})
 
 def add_example_view(request):
+    print request.POST
     title = request.POST['title']
     topic = Topic.objects.get(name=request.POST['topic'])
     concept = Concept.objects.get(name=request.POST['concept'])
-    text = request.POST['text']
+    content = request.POST['content']
+    email = request.POST['email']
 
-    print "Title: %s, Topic: %s, Concept: %s, Text: %s" % (title, topic, concept, text)
+    print "Title: %s, Topic: %s, Concept: %s, Content: %s, Email: %s" % (title, topic, concept, content, email)
 
-    Example(title=title, topic=topic, concept=concept, content=text).save()
+    Example(title=title, topic=topic, concept=concept, content=content, email=email).save()
     return render(request, 'question_asked.html')

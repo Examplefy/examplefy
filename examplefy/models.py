@@ -41,6 +41,7 @@ class Example(models.Model):
     content   = models.TextField()
     topic     = models.ForeignKey(Topic)
     concept   = models.ForeignKey(Concept)
+    email     = models.CharField(max_length=100)
 
     def __unicode__(self):
         return unicode(self.title)
