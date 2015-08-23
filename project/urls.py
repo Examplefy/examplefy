@@ -14,9 +14,10 @@ from examplefy.views import *
 # Basics
 urlpatterns = patterns('',
     # homepage
-    #url(r'^$', examplefy.views.homepage, name="search"),
+    url(r'^$', examplefy.views.homepage, name="homepage"),
 
-    url(r'^$', ExamplefySearchView.as_view(), name='haystack_search'),
+    #url(r'^$', ExamplefySearchView.as_view(), name='haystack_search'),
+    url(r'^search/', include('haystack.urls')),
 
     # admin site
     url(r'^admin/', include(admin.site.urls)),

@@ -8,14 +8,19 @@ from .models import Example, Topic, Concept
 from .forms import *
 import json
 
+
+
 def homepage(request):
-    if request.method == "POST":
-        form = SearchFrom(request.form)
-        if form.is_valid():
-            return HttpResponseRedirect("/")
-    else:
-        form = SearchForm()
-        return render(request, 'index.html', {"logged_in": request.user.is_authenticated(), "form": form})
+    return render(request, 'index.html')
+
+# def homepage(request):
+#     if request.method == "POST":
+#         form = SearchFrom(request.form)
+#         if form.is_valid():
+#             return HttpResponseRedirect("/")
+#     else:
+#         form = SearchForm()
+#         return render(request, 'index.html', {"logged_in": request.user.is_authenticated(), "form": form})
 
 def logout_user(request):
     print("hi")
