@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponse, HttpResponseRedirect
 from django.contrib.auth import authenticate, login, logout
-from django.views.generic import View
+from django.views.generic import View, TemplateView
 from haystack.forms import SearchForm, ModelSearchForm
 from haystack.generic_views import SearchView
 from .models import Example, Topic, Concept
@@ -12,6 +12,9 @@ import json
 
 def homepage(request):
     return render(request, 'index.html')
+
+class ExampleSearchView(SearchView):
+    pass
 
 # def homepage(request):
 #     if request.method == "POST":
@@ -29,6 +32,15 @@ def logout_user(request):
 
 def search(request):
     pass
+
+class ExampleView(TemplateView):
+    template_name = "example.html"
+
+    def get_context_data(self, **kwargs):
+        context = super(ExampleView, self).get_context_data(**kwargs)
+        context["title"] = self.request.GET["title"]
+        context["content"] = Example.objects.filter(title=self.request.GET["title"]).all()[0].content
+        return context
 
 class ExamplefySearchView(SearchView):
     template_name = 'index.html'
