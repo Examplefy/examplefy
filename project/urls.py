@@ -16,16 +16,14 @@ urlpatterns = patterns('',
     # homepage
     url(r'^$', examplefy.views.homepage, name="homepage"),
 
-    #url(r'^$', ExamplefySearchView.as_view(), name='haystack_search'),
+    #url(r'^search/', ExampleSearchView.as_view(), name='haystack_search'),
     url(r'^search/', include('haystack.urls')),
 
     # admin site
     url(r'^admin/', include(admin.site.urls)),
 
     # viewing an example
-    url(r'^example/$',
-    TemplateView.as_view(template_name="example.html"),
-     name='example'),
+    url(r'^example/$', ExampleView.as_view(), name='example'),
 
     # Asking a question
     url(r'^ask/$', ask_view, name='ask'),
