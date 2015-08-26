@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% block content %}
+
+
+<!-- pass context to JS as a global variable -->
+<script type="text/javascript">window.DATA = JSON.parse("{{ data.json }}".replace(/&quot;/g,"\""))</script>
+<header>
+  <div class="header-content" id="ask_form">
+    <div class="header-content-inner">
+      <div class="row">
+        <div class="col-md-2"></div>
+
+        <div class="col-md-4 text-center" id="topic_group">
+          <button type="button" class="btn btn-primary dropdown-toggle form" data-toggle="dropdown" id="topic_button_search">
+            Choose a Topic
+          </button>
+          <ul class="dropdown-menu" role="menu" id="topic_dropdown_search">
+            {% for topic in data.topics %}
+              <li class="topic_list_element_search" id="{{ topic }}"><a>{{ topic }}</a></li>
+            {% endfor %}
+          </ul>
+        </div>
+
+        <div class="col-md-4 text-center" id="concept_group_search">
+          <button type="button" class="btn btn-primary dropdown-toggle form" data-toggle="dropdown" id="concept_button_search">
+            Choose a Concept
+          </button>
+          <ul class="dropdown-menu" role="menu" id="concept_dropdown_search">
+            <li><a>Please select a topic</a></li>
+          </ul>
+        </div>
+
+        <div class="col-md-2"></div>
+
+      </div> <!-- row -->
+      <div class="row" id="example_list">
+
+      </div> <!-- row -->
+    </div>
+  </div>
+</header>
+
+{% endblock %}

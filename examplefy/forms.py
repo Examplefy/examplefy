@@ -3,9 +3,7 @@ from django import forms
 from django.core import urlresolvers
 from django.db import models
 from examplefy.models import Example, Topic
+from haystack.forms import SearchForm
 
-class TopicForm(forms.Form):
-    """
-    A form used to ask a what topic a question will be
-    """
-    topic = forms.ModelChoiceField(queryset=Topic.objects.all(), empty_label="(Nothing)")
+class ExamplfySearchForm(SearchForm):
+    topic = forms.ChoiceField()
