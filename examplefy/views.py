@@ -11,7 +11,7 @@ import json
 
 
 def homepage(request):
-    return render(request, 'index.html')
+    return render(request, 'index.html', {"homepage": True})
 
 class ExampleSearchView(TemplateView):
     template_name = "search.html"
@@ -104,5 +104,6 @@ def get_examples_json(request):
             "link": example.link,
             "id": example.id,
             "date": example.date,
+            "src": "https://img.youtube.com/vi/" + example.link +"/0.jpg"
         })
     return JsonResponse(out)
