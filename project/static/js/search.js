@@ -125,8 +125,19 @@ function customColumnRenderer(helpers, callback) {
         // This will default to output the text value of the row item
         switch(column) {
           case 'title':
-            // let's combine name and description into a single column
             customMarkup = '<a href="/example?id=' + rowData.id + '">' + rowData.title + '</a>';
+            break;
+
+          case 'topic':
+            customMarkup = '<h4 style="color: white">' + rowData.topic + '</h4>';
+            break;
+
+          case 'concept':
+            customMarkup = '<h4 style="color: white">' + rowData.concept + '</h4>';
+            break;
+
+          case 'date':
+            customMarkup = '<h4 style="color: white">' + rowData.date + '</h4>';
             break;
 
 
