@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.contrib.auth import authenticate, login, logout
 from django.views.generic import View, TemplateView
 from haystack.forms import SearchForm, ModelSearchForm
@@ -47,8 +47,10 @@ class ExampleView(TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super(ExampleView, self).get_context_data(**kwargs)
-        context["title"] = self.request.GET["title"]
-        context["content"] = Example.objects.filter(title=self.request.GET["title"]).all()[0].content
+        example = Example.objects.get(id=self.request.GET["id"])
+        context["title"] = example.title
+        context["content"] = example.content
+        context["link"] = example.link
         return context
 
 class ExamplefySearchView(SearchView):
@@ -82,17 +84,24 @@ def add_example_view(request):
     Example(title=title, topic=topic, concept=concept, content=content, email=email).save()
     return render(request, 'question_asked.html')
 
-def get_examples(request):
+def get_examples_json(request):
     if request.GET["concept"]:
         examples = Example.objects.filter(topic__name=request.GET["topic"]).filter(concept__name=request.GET["concept"]).all()
-    else:
+    elif request.GET["topic"]:
         examples = Example.objects.filter(topic__name=request.GET["topic"]).all()
-    out = ""
-    for example in examples:
-        out += ",%s" % (example.id)
-    if out: out = out[1:]
-    return HttpResponse(out)
+    else:
+        examples = []
 
-def get_example_by_id(request):
-    example = Example.objects.get(id=request.GET["example_id"])
-    return HttpResponse(example)
+    out = {}
+    out["total"] = len(examples)
+    out["items"] = []
+    for example in examples:
+        out["items"].append({
+            "topic": example.topic.name,
+            "concept": example.concept.name,
+            "title": example.title,
+            "content": example.content,
+            "link": example.link,
+            "id": example.id,
+        })
+    return JsonResponse(out)

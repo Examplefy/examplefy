@@ -32,8 +32,9 @@ urlpatterns = patterns('',
     url(r'^add_example', add_example_view, name='add_example'),
 
     # Getting examples by ajax
-    url(r'^get_examples', get_examples, name='get_examples'),
-    url(r'^get_example_by_id', get_example_by_id, name='get_example_by_id'),
+    # url(r'^get_examples', get_examples, name='get_examples'),
+    url(r'^get_examples_json', get_examples_json, name='get_examples_json'),
+    # url(r'^get_example_by_id', get_example_by_id, name='get_example_by_id'),
 )
 
 
