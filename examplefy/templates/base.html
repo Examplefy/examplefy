@@ -27,6 +27,7 @@
 
     <!-- Custom CSS -->
     <link rel="stylesheet" href="{% static "css/creative.css" %}" type="text/css">
+    <link href="//www.fuelcdn.com/fuelux/3.11.0/css/fuelux.min.css" rel="stylesheet">
 
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -37,7 +38,7 @@
 
 </head>
 
-<body id="page-top">
+<body id="page-top" class="fuelux">
 {% endblock %}
 
 {% block navbar %}
@@ -51,7 +52,7 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <a class="navbar-brand page-scroll" href="/#page-top">Examplefy</a>
+            <a class="navbar-brand page-scroll" href="/#page-top">Examplfy</a>
         </div>
 
         <!-- Collect the nav links, forms, and other content for toggling -->
@@ -103,9 +104,11 @@ pass
 
   <!-- Custom Theme JavaScript -->
   <script src="{% static "js/creative.js"%}"></script>
+  <script src="http://www.fuelcdn.com/fuelux/3.4.0/js/fuelux.min.js"></script>
 
   <!-- Examplefy JavaScript -->
   <script src="{% static "js/ask.js" %}"></script>
+  <script src="{% static "js/search.js "%}"></script>
 </body>
 </html>
 {% endblock %}

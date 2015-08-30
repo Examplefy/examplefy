@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.contrib.auth import authenticate, login, logout
 from django.views.generic import View, TemplateView
 from haystack.forms import SearchForm, ModelSearchForm
@@ -13,8 +13,17 @@ import json
 def homepage(request):
     return render(request, 'index.html')
 
-class ExampleSearchView(SearchView):
-    pass
+class ExampleSearchView(TemplateView):
+    template_name = "search.html"
+
+    def get_context_data(self, **kwargs):
+        data = {}
+        data["topics"] = [topic.name for topic in list(Topic.objects.all())]
+        data["concepts"] = {}
+        for topic in data["topics"]:
+            data["concepts"][topic] = [concept.name for concept in list(Concept.objects.all().filter(topic__name=topic))]
+        data["json"] = json.dumps(data)
+        return {"data": data}
 
 # def homepage(request):
 #     if request.method == "POST":
@@ -38,13 +47,20 @@ class ExampleView(TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super(ExampleView, self).get_context_data(**kwargs)
-        context["title"] = self.request.GET["title"]
-        context["content"] = Example.objects.filter(title=self.request.GET["title"]).all()[0].content
+        example = Example.objects.get(id=self.request.GET["id"])
+        context["title"] = example.title
+        context["content"] = example.content
+        context["link"] = example.link
         return context
 
 class ExamplefySearchView(SearchView):
     template_name = 'index.html'
-    form_class = SearchForm
+    form_class = ExamplfySearchForm
+
+    def get_queryset(self):
+        queryset = super(ExamplefySearchView, self).get_queryset()
+        # further filter queryset based on some set of criteria
+        return queryset.filter(link__gte=5)
 
 def ask_view(request):
     data = {}
@@ -67,3 +83,25 @@ def add_example_view(request):
 
     Example(title=title, topic=topic, concept=concept, content=content, email=email).save()
     return render(request, 'question_asked.html')
+
+def get_examples_json(request):
+    if request.GET["concept"]:
+        examples = Example.objects.filter(topic__name=request.GET["topic"]).filter(concept__name=request.GET["concept"]).all()
+    elif request.GET["topic"]:
+        examples = Example.objects.filter(topic__name=request.GET["topic"]).all()
+    else:
+        examples = []
+
+    out = {}
+    out["total"] = len(examples)
+    out["items"] = []
+    for example in examples:
+        out["items"].append({
+            "topic": example.topic.name,
+            "concept": example.concept.name,
+            "title": example.title,
+            "content": example.content,
+            "link": example.link,
+            "id": example.id,
+        })
+    return JsonResponse(out)

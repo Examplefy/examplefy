@@ -16,8 +16,8 @@ urlpatterns = patterns('',
     # homepage
     url(r'^$', examplefy.views.homepage, name="homepage"),
 
-    #url(r'^search/', ExampleSearchView.as_view(), name='haystack_search'),
-    url(r'^search/', include('haystack.urls')),
+    url(r'^search/', ExampleSearchView.as_view(), name='haystack_search'),
+    #url(r'^search/', include('haystack.urls')),
 
     # admin site
     url(r'^admin/', include(admin.site.urls)),
@@ -29,9 +29,14 @@ urlpatterns = patterns('',
     url(r'^ask/$', ask_view, name='ask'),
 
     # Adding an example
-    url(r'^add_example', add_example_view, name='add_example')
+    url(r'^add_example', add_example_view, name='add_example'),
 
+    # Getting examples by ajax
+    # url(r'^get_examples', get_examples, name='get_examples'),
+    url(r'^get_examples_json', get_examples_json, name='get_examples_json'),
+    # url(r'^get_example_by_id', get_example_by_id, name='get_example_by_id'),
 )
+
 
 
 # Authentication
