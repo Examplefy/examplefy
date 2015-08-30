@@ -103,5 +103,6 @@ def get_examples_json(request):
             "content": example.content,
             "link": example.link,
             "id": example.id,
+            "date": example.date,
         })
     return JsonResponse(out)

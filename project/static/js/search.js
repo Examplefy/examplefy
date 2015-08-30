@@ -62,6 +62,11 @@ function dynamicDataSource(options, callback) {
       'property': 'concept',
       'sortable': true
     },
+    {
+      'label': 'Date Added',
+      'property': 'date',
+      'sortable': true
+    }
   ];
 
   // set options

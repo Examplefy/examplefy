@@ -43,6 +43,7 @@ class Example(models.Model):
     concept   = models.ForeignKey(Concept)
     email     = models.CharField(max_length=100)
     link      = models.CharField(max_length=200, null=True)
+    date      = models.DateField()
 
     def __unicode__(self):
         return unicode(self.title)
