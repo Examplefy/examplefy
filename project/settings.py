@@ -71,7 +71,6 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
-                'django.template.context_processors.media', # makes MEDIA_URL available from templates
             ],
         },
     },
@@ -149,10 +148,15 @@ HAYSTACK_CONNECTIONS = {
     },
 }
 
-# For image upload
-if DEBUG:
-    MEDIA_ROOT = '/Users/calpeyser/personal/examplefy_src/project/media/'
-    MEDIA_URL = 'http://localhost:8000/'
-else:
-    MEDIA_ROOT = '/var/media/'
-    MEDIA_URL = 'http://examplefy.herokuapp.com/'
+
+#
+# HAYSTACK_CONNECTIONS = {
+#     'default': {
+#         'ENGINE': 'haystack.backends.whoosh_backend.WhooshEngine',
+#         'PATH': os.path.join(os.path.dirname(__file__), 'whoosh_index'),
+#        'KWARGS': {
+#            'verify_certs': True,
+#            'ca_certs': certifi.where()
+#        }
+#     },
+# }

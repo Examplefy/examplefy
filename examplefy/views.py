@@ -2,7 +2,6 @@ from django.shortcuts import render, redirect
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.contrib.auth import authenticate, login, logout
 from django.views.generic import View, TemplateView
-from haystack.forms import SearchForm, ModelSearchForm
 from haystack.generic_views import SearchView
 from .models import Example, Topic, Concept
 from .forms import *
@@ -53,26 +52,36 @@ class ExampleView(TemplateView):
         context["link"] = example.link
         return context
 
-class ExamplefySearchView(SearchView):
-    template_name = 'index.html'
-    form_class = ExamplfySearchForm
-
-    def get_queryset(self):
-        queryset = super(ExamplefySearchView, self).get_queryset()
-        # further filter queryset based on some set of criteria
-        return queryset.filter(link__gte=5)
-
 def ask_view(request):
-    data = {}
-    data["topics"] = [topic.name for topic in list(Topic.objects.all())]
-    data["concepts"] = {}
-    for topic in data["topics"]:
-        data["concepts"][topic] = [concept.name for concept in list(Concept.objects.all().filter(topic__name=topic))]
-    data["json"] = json.dumps(data)
-    return render(request, 'ask.html', {"data": data})
+    if request.method == "POST":
+        form = AskForm(request.POST)
+        if form.is_valid():
+            print "hi its valid"
+            Example(
+                title=form.cleaned_data['title'],
+                email=form.cleaned_data['email'],
+                topic=form.cleaned_data['topic'],
+                concept=form.cleaned_data['concept'],
+                content=form.cleaned_data['content'],
+            ).save()
+            return HttpResponseRedirect('/')
+        else:
+            print form.errors
+    else:
+        form = AskForm()
+        #print list(form.fields['concept'].widget.__dict__['choices'])
+    return render(request, 'ask.html', {'form': form})
+
+
+    # data = {}
+    # data["topics"] = [topic.name for topic in list(Topic.objects.all())]
+    # data["concepts"] = {}
+    # for topic in data["topics"]:
+    #     data["concepts"][topic] = [concept.name for concept in list(Concept.objects.all().filter(topic__name=topic))]
+    # data["json"] = json.dumps(data)
+    # return render(request, 'ask.html', {"data": data})
 
 def add_example_view(request):
-    print request.POST
     title = request.POST['title']
     topic = Topic.objects.get(name=request.POST['topic'])
     concept = Concept.objects.get(name=request.POST['concept'])
@@ -80,12 +89,16 @@ def add_example_view(request):
     email = request.POST['email']
     picture = request.FILES
 
-    print picture
 
-    print "Title: %s, Topic: %s, Concept: %s, Content: %s, Email: %s" % (title, topic, concept, content, email)
+    #print "Title: %s, Topic: %s, Concept: %s, Content: %s, Email: %s" % (title, topic, concept, content, email)
 
     Example(title=title, topic=topic, concept=concept, content=content, email=email).save()
     return render(request, 'question_asked.html')
+
+def get_concepts_by_topic(request):
+    concepts = Concept.objects.filter(topic__name=request.GET["topic"])
+    out = {'concepts': [concept.name for concept in concepts]}
+    return JsonResponse(out)
 
 def get_examples_json(request):
     if request.GET["concept"]:

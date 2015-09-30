@@ -6,99 +6,44 @@
         <div class="header-content" id="ask_form">
             <div class="header-content-inner">
               <h1 style="color:white" class="form">Ask us a question</h1>
-              <hr class="form">
-                <div class="container-fluid">
-                  <div class="row">
-                    <div class="col-md-2"></div>
 
-                    <div class="col-md-4 text-center" id="topic_group">
-                      <button type="button" class="btn btn-primary dropdown-toggle form" data-toggle="dropdown" id="topic_button">
-                        Choose a Topic
-                      </button>
-                      <ul class="dropdown-menu" role="menu" id="topic_dropdown">
-                        {% for topic in data.topics %}
-                          <li class="topic_list_element" id="{{ topic }}"><a>{{ topic }}</a></li>
-                        {% endfor %}
-                      </ul>
-                    </div>
+              <hr><br>
 
-                    <div class="col-md-4 text-center" id="concept_group">
-                      <button type="button" class="btn btn-primary dropdown-toggle form" data-toggle="dropdown" id="concept_button">
-                        Choose a Concept
-                      </button>
-                      <ul class="dropdown-menu" role="menu" id="concept_dropdown" >
-                        <li><a>Please select a topic</a></li>
-                      </ul>
-                    </div>
+              <form action="/ask/" method="post">
+                {% csrf_token %}
 
-                    <div class="col-md-2"></div>
-
-                  </div> <!-- row -->
-
-                  <br><br>
-
-                  <div class="row">
-                    <div class="col-md-2"></div>
-
-                    <div class="col-md-4 text-center" id="title_group">
-                      <input type="text" class="form-control form" id="Title" placeholder="Question Title" aria-describedby="sizing-addon1">
-                    </div>
-
-                    <div class="col-md-4 text-center" id="email_group">
-                      <input type="text" class="form-control form" id="Email" placeholder="Your email address" aria-describedby="sizing-addon1">
-                    </div>
-
-                    <div class="col-md-2"></div>
-                  </div> <!-- row -->
-
-                  <br><br>
-
-                  <div class="row">
-                    <div class="col-md-12"></div>
-                      <textarea class="form-control form" rows="10" id="Content"></textarea>
-                    </div>
-                  </div> <!-- row -->
-
-                  <br><br>
-
-                  <div class="row">
-                    <div class="col-md-6">
-                      <button type="button" class="btn btn-primary form" id="submit">
-                        Submit
-                      </button>
-                    </div>
-                    <div class="col-md-6 form">
-                      <p>You will be allowed to upload an optional photo on the next page.</p>
-                    </div>
-                  </div> <!-- row -->
-
-                  <div class="row">
-                    <div class="col-md-12" id="error">
-                    </div>
-                  </div>
-
-
-                </div> <!-- container-fluid -->
-
-
-            </div>
-            <div class="header-content" id="confirm_div">
-              <div class="container-fluid">
-                <div class ="row">
+                <div class="row"> <!-- Topic and Concept -->
                   <div class="col-md-2"></div>
-                  <div class="col-md-8" id="confirm_header"></div
+                  <div class="col-md-4 text-center">{{ form.topic }}</div>
+                  <div class="col-md-4 text-center">{{ form.concept }}</div>
                   <div class="col-md-2"></div>
+                </div> <!-- row -->
+
+                <br><br>
+
+                <div class="row"> <!-- Title and Email address -->
+                  <div class="col-md-2"></div>
+                  <div class="col-md-4 text-center">{{ form.title }}</div>
+                  <div class="col-md-4 text-center">{{ form.email }}</div>
+                  <div class="col-md-2"></div>
+                </div> <!-- row -->
+
+                <br><br>
+
+                <div class="row"> <!-- Content -->
+                  <div class="col-md-12">{{ form.content }}</div>
                 </div>
-                <div class="row">
-                  <div class="col-md-4"></div>
-                  <div class="col-md-4">
-                    <form method="post" action="/add_example" enctype="multipart/form-data" id="confirm_form">{% csrf_token %}</form>
-                  </div>
-                  <div class="col-md-4"></div>
-                </div>
-              </div>
-            </div>
+
+                <br><br>
+
+                <input type="hidden" name="topic" id="topic_field" value="">
+                <input type="hidden" name="concept" id="concept_field" value="">
+                <input type="submit" class="btn btn-primary" value="Submit" />
+              </form>
+            </div
         </div>
       </header>
+
+      {{ form.media }}
 
 {% endblock %}

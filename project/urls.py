@@ -35,6 +35,9 @@ urlpatterns = patterns('',
     # url(r'^get_examples', get_examples, name='get_examples'),
     url(r'^get_examples_json', get_examples_json, name='get_examples_json'),
     # url(r'^get_example_by_id', get_example_by_id, name='get_example_by_id'),
+
+    # Getting concepts for a topic by ajax
+    url(r'^get_concepts_by_topic', get_concepts_by_topic, name="get_concepts_by_topic"),
 )
 
 
