@@ -85,6 +85,8 @@ function fade_in_confirm() {
   header.append('<h2 style="color:white">Confirm Question</h2>')
   header.append('<h3 style="color:white">Topic: ' + retrieve("topic") + ', Concept: ' + retrieve("concept") + '</h3>')
   header.append('<br>')
+  form.append('<input type="file" name="pic" accept="image/*">')
+  form.append('<br>')
   form.append('<input type="submit" class="form-control"></input>')
   form.append($('<input type="hidden" name="title" value="' + retrieve("title") + '">'))
   form.append($('<input type="hidden" name="content" value="' + retrieve("content") + '">'))

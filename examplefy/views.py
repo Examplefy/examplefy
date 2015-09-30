@@ -78,6 +78,9 @@ def add_example_view(request):
     concept = Concept.objects.get(name=request.POST['concept'])
     content = request.POST['content']
     email = request.POST['email']
+    picture = request.FILES
+
+    print picture
 
     print "Title: %s, Topic: %s, Concept: %s, Content: %s, Email: %s" % (title, topic, concept, content, email)
 
