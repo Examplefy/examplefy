@@ -58,6 +58,14 @@ class IndexView(generic.ListView):
 class DetailView(generic.DetailView):
     model = Question
     template_name = 'questions/detail.html'
+    def detail_view(request, object_id=None):
+        if request.user.is_authenticated():
+            question = get_object_or_404(Question, id=object_id)
+        template = "questions/detail.html"
+        context = {
+            "object": question
+        }
+        return render(request, template, context)
 
 
 class ResultsView(generic.DetailView):

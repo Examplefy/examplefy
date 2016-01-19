@@ -25,7 +25,7 @@ hr.light {
 }
 
 a {
-    color: #f05f40;
+    color: #F05F40;
     -webkit-transition: all .35s;
     -moz-transition: all .35s;
     transition: all .35s;
@@ -39,7 +39,11 @@ a:focus {
 	z-index: 1000;
  	border-width: 0 0 1px;
 }
-
+.alert {
+    margin-top: 60px;
+    z-index: 900;
+    padding: 20 20 20 20px;
+}
 h1,
 h2,
 h3,
@@ -49,7 +53,7 @@ h6 {
     font-family: 'Open Sans','Helvetica Neue',Arial,sans-serif;
 }
 h1 {
-    padding-top: 200px;
+    padding-top: 50px;
     position: relative;
     width: 100%;
 }
@@ -102,10 +106,6 @@ aside {
     padding: 200px;
 }
 
-h1{
-	padding-top: 100px;
-	
-}
 .navbar-default {
     border-color: rgba(34,34,34,.05);
     font-family: 'Open Sans','Helvetica Neue',Arial,sans-serif;

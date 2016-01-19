@@ -3,6 +3,8 @@ from django.core.urlresolvers import reverse
 from django.db.models.signals import post_save
 from django.utils.text import slugify
 from django.utils.safestring import mark_safe
+from django.db.models.signals import pre_save, post_save
+from django.utils.text import slugify
 # Create your models here.
 
 class ProductQuerySet(models.QuerySet):
@@ -25,8 +27,9 @@ class ProductManager(models.Manager):
 class Product(models.Model):
 	title = models.CharField(max_length=120)
 	description = models.TextField(blank=True, null=True)
-	price = models.DecimalField(decimal_places=2, max_digits=1000)
+	price = models.DecimalField(decimal_places=2, max_digits=1000, default=0.99)
 	active = models.BooleanField(default=True)
+        slug = models.SlugField(blank=True)
         categories = models.ManyToManyField('Category', blank=True)
         default = models.ForeignKey('Category', related_name='default_category', null=True, blank=True)
     
@@ -45,12 +48,16 @@ class Product(models.Model):
             if img:
                 return img.image.url
             return img #none
+def product_pre_save_reciever(sender, instance, *args, **kwargs):
+    if not instance.slug:
+        instance.slug = slugify(instance.title)
+pre_save.connect(product_pre_save_reciever, sender=Product)
 
 class Variation(models.Model):
     product = models.ForeignKey(Product)
     title = models.CharField(max_length=120)
     inventory = models.IntegerField(null=True, blank=True) #unlimited amount
-    price = models.DecimalField(decimal_places=2, max_digits=20)
+    price = models.DecimalField(decimal_places=2, max_digits=20, default=0.99)
     sale_price = models.DecimalField(decimal_places=2, max_digits=20, null=True, blank=True)
     active = models.BooleanField(default=True)
 

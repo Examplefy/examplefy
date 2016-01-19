@@ -5,7 +5,7 @@ from django.http import Http404, HttpResponse, HttpResponseRedirect, JsonRespons
 from django.views.generic.list import ListView
 from django.db.models import Q
 from django.utils import timezone
-from .forms import VariationInventoryFormSet
+from .forms import VariationInventoryFormSet, ProductModelForm
 from django.contrib import messages
 from .mixins import StaffRequiredMixin, LoginRequiredMixin
 import json
@@ -72,6 +72,7 @@ class ProductListView(ListView):
 		context["now"] = timezone.now()
 		context["query"] = self.request.GET.get("q") #none
 		return context
+
 	def get_queryset(self, *args, **kwargs):
 		qs = super(ProductListView, self).get_queryset(*args, **kwargs)
 		query = self.request.GET.get("q")
@@ -89,7 +90,6 @@ class ProductListView(ListView):
 				pass
 		return qs
 
-
 class ProductDetailView(DetailView):
 	model = Product
 	#template_name = "product.html"
@@ -103,7 +103,7 @@ def product_detail_view_func(request, id):
 	product_instance = get_object_or_404(Product, id=id)
 
 	try:
-		product_instace = Product.objects.get(id=id)
+		product_instance = Product.objects.get(id=id)
 	except Product.DoesNotExist:
 		raise Http404
 	except:
@@ -114,6 +114,59 @@ def product_detail_view_func(request, id):
 		"object": product_instance
 	}
 	return render(request, template, context)
+
+def create_view(request):
+	model = Product
+	def get_queryset(self, *args, **kwargs):
+		qs = super(ProductListView, self).get_context_data(**kwargs)
+		return qs
+	form = ProductModelForm(request.POST or None)
+	if form.is_valid():
+		instance = form.save(commit=False)
+		instance.user = request.user
+		instance.save()
+		messages.success(request, "Your Question has been saved.")
+		# data = form.cleaned_data
+		# title = data.get("title")
+		# description = data.get("description")
+		# #price = data.get("price")
+		# new_obj = Product.objects.create(title=title, description=description)
+	template = "products/create_view.html"
+	context = {
+		"form": form,
+	}
+	return render(request, template, context)
+
+def update_view(request, object_id=None):					
+	product = get_object_or_404(Product, id=object_id)
+	form = ProductModelForm(request.POST or None, instance=Product)
+	if form.is_valid():
+		instance = form.save(commit=False)
+		instance.save()
+		messages.success(request, "Your Question has been saved.")
+		# data = form.cleaned_data
+		# title = data.get("title")
+		# description = data.get("description")
+		# #price = data.get("price")
+		# new_obj = Product.objects.create(title=title, description=description)
+	template = "products/update_view.html"
+	context = {
+		"form": form,
+		"object": product,
+	}
+	return render(request, template, context)
+
+def detail_slug_view(request, slug=None):
+	product = Product.objects.get(slug=slug)
+	try:
+		product = get_object_or_404(Product, slug=slug)
+	except Product.MultipleObjectsReturned:
+		product = Product.objects.filter(slug=slug).order_by("-title").first()
+		template = "products/product_detail.html"
+		context = {
+			"object": product
+		}
+		return render(request, template, context)
 
 class ExampleView(TemplateView):
     template_name = "products/example.html"

@@ -49,7 +49,7 @@ $(".variation_select").change(function(){
 <!-- <h3 id='price'>{{ object.variation_set.first.price }}</h3> -->
 <form method='GET' action="{% url 'cart' %}">
 	{% if object.variation_set.count > 1 %}
-	<h3 id='price'>{{ object.variation_set.first.price }}</h3>
+	<!-- <h3 id='price'>{{ object.variation_set.first.price }}</h3> -->
 
 	<select name='item' class='form-control variation_select'>
 		{% for vari_obj in object.variation_set.all %}
@@ -60,12 +60,12 @@ $(".variation_select").change(function(){
 
 	{% else %}
 		<input type="hidden" name='item' value='{{ object.variation_set.first.id }}' />
-			<h3 id='price'>{% if object.variation_set.first.sale_price %}
+			<!-- <h3 id='price'>{% if object.variation_set.first.sale_price %}
 			{{ object.variation_set.first.sale_price  }}
-			<small class='og-price'>{{ object.variation_set.first.price }}</small>
+			<small class='og-price'>{{ object.variation_set.first.price }}</small> -->
 			{% else %}
 			
-			{{ object.variation_set.first.price }}
+			<!-- {{ object.variation_set.first.price }} -->
 			{% endif %}
 		</h3>
 
