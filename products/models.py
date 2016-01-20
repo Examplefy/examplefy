@@ -1,4 +1,5 @@
 from django.db import models
+from django.conf import settings
 from django.core.urlresolvers import reverse
 from django.db.models.signals import post_save
 from django.utils.text import slugify
@@ -24,12 +25,17 @@ class ProductManager(models.Manager):
             qs = (products_one | products_two).exclude(id=instance.id).distinct
             return qs #self.get_queryset()
 
+def download_media_location(instance, filename):
+    return "%s/%s" %(instance.user.username, filename)
+
 class Product(models.Model):
 	title = models.CharField(max_length=120)
 	description = models.TextField(blank=True, null=True)
 	price = models.DecimalField(decimal_places=2, max_digits=1000, default=0.99)
 	active = models.BooleanField(default=True)
-        slug = models.SlugField(blank=True)
+        slug = models.SlugField(blank=True, unique=True)
+        managers = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name="managers_products", blank=True)
+        media = models.FileField(blank=True, null=True, upload_to=download_media_location)
         categories = models.ManyToManyField('Category', blank=True)
         default = models.ForeignKey('Category', related_name='default_category', null=True, blank=True)
     
@@ -48,9 +54,22 @@ class Product(models.Model):
             if img:
                 return img.image.url
             return img #none
+
+def create_slug(instance, new_slug=None):
+    slug = slugify(instance.title)
+    if new_slug is not None:
+        slug = new_slug
+
+    qs = Product.objects.filter(slug=slug)
+    exists = qs.exists()
+    if exists:
+        new_slug = "%s-%s" %(slug, qs.first().id) 
+        return create_slug(instance, new_slug=new_slug)
+    return slug
+
 def product_pre_save_reciever(sender, instance, *args, **kwargs):
     if not instance.slug:
-        instance.slug = slugify(instance.title)
+        instance.slug = create_slug(instance)
 pre_save.connect(product_pre_save_reciever, sender=Product)
 
 class Variation(models.Model):
@@ -96,7 +115,10 @@ def image_upload_to(instance, filename):
     title = instance.product.title
     slug = slugify(title)
     basename, file_extension = filename.split(".")
-    new_filename = "%s-%s.%s" %(slug, instance.id, file_extension)
+    qs = Product.objects.filter(slug=slug)
+    exists = qs.exists()
+    if qs:
+        new_filename = "%s-%s.%s" %(slug, qs.first().id, file_extension)
     return "products/%s/%s" %(slug, new_filename)
 
 class ProductImage(models.Model):
@@ -138,52 +160,3 @@ class Category(models.Model):
         return self.title
     def get_absolute_url(self):
         return reverse("category_detail", kwargs={"slug": self.slug })
-
-class Topic(models.Model):
-    """
-    Represents a high level topic.
-    """
-    name = models.CharField(max_length=50)
-
-    def __unicode__(self):
-        return unicode(self.name)
-
-class Concept(models.Model):
-    """
-    Represents a concept, which exists within a Topic
-    """
-    name = models.CharField(max_length=50)
-    topic = models.ForeignKey(Topic)
-
-    def __unicode__(self):
-        return unicode(self.name)
-
-
-class Example(models.Model):
-    """
-    Represents an example.  The fundamental data type for the application.
-    """
-    title     = models.CharField(max_length=50)
-    content   = models.TextField()
-    topic     = models.ForeignKey(Topic)
-    concept   = models.ForeignKey(Concept)
-    email     = models.CharField(max_length=100)
-    link      = models.CharField(max_length=200, null=True)
-    date      = models.DateField()
-    picture   = models.ImageField(null=True)
-
-    def __unicode__(self):
-        return unicode(self.title)
-
-    class Meta:
-        ordering = ('title',)
-
-class Answer(models.Model):
-    """
-    Represents a solution to an example.
-    """
-    example = models.ForeignKey(Example)
-    content = models.TextField()
-
-    def __unicode__(self):
-        return unicode(self.example)

@@ -2,7 +2,7 @@ from django.contrib import admin
 
 # Register your models here.
 
-from .models import Product, Example, Topic, Concept, Answer, Variation, ProductImage, Category, ProductFeatured
+from .models import Product, Variation, ProductImage, Category, ProductFeatured
 
 class ProductImageInline(admin.TabularInline):
 	model = ProductImage
@@ -22,11 +22,6 @@ class ProductAdmin(admin.ModelAdmin):
 		model = Product
 
 admin.site.register(Product, ProductAdmin)
-admin.site.register(Example)
-admin.site.register(Topic)
-admin.site.register(Concept)
-admin.site.register(Answer)
-# admin.site.register(Variation)
 admin.site.register(ProductImage)
 admin.site.register(Category)
 admin.site.register(ProductFeatured)

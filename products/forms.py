@@ -1,6 +1,8 @@
 from .models import Variation, Product
 from django import forms
 from django.forms.models import modelformset_factory
+from django.utils.text import slugify
+from django.contrib import messages 
 
 class VariationInventoryForm(forms.ModelForm):
 	class Meta:
@@ -61,6 +63,15 @@ class ProductModelForm(forms.ModelForm):
 				}
 			)
 		}
+	def clean(self, *args, **kwargs):
+		cleaned_data = super(ProductModelForm, self).clean(*args, **kwargs)
+		# title = cleaned_data.get("title")
+		# slug = slugify(title)
+		# qs = Product.objects.filter(slug=slug).exists()
+		# if qs:
+		# 	raise forms.ValidationError("Unique question is required. Please submit a unique question title.")
+		return cleaned_data
+
 	def clean_title(self):
 		title = self.cleaned_data.get("title")
 		if len(title) > 0:

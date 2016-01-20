@@ -3,15 +3,16 @@ from django.views.generic.detail import DetailView
 from django.views.generic import View, TemplateView
 from django.http import Http404, HttpResponse, HttpResponseRedirect, JsonResponse
 from django.views.generic.list import ListView
+from django.views.generic.edit import CreateView, UpdateView
 from django.db.models import Q
 from django.utils import timezone
 from .forms import VariationInventoryFormSet, ProductModelForm
 from django.contrib import messages
-from .mixins import StaffRequiredMixin, LoginRequiredMixin
+from .mixins import StaffRequiredMixin, LoginRequiredMixin, MultiSlugMixin, SubmitMixin
 import json
 # Create your views here.
 
-from .models import Product, Example, Topic, Concept, Variation, Category
+from .models import Product, Variation, Category
 
 class CategoryListView(ListView):
 	model = Category
@@ -90,9 +91,24 @@ class ProductListView(ListView):
 				pass
 		return qs
 
-class ProductDetailView(DetailView):
+class ProductAddView(SubmitMixin, CreateView):
 	model = Product
-	#template_name = "product.html"
+	form_class = ProductModelForm
+	template_name = "products/form.html"
+	success_url = "/products/add"
+	submit_btn = "Submit"
+	title = "Submit"
+
+class ProductUpdateView(SubmitMixin, MultiSlugMixin, UpdateView):
+	model = Product
+	form_class = ProductModelForm
+	template_name = "products/form.html"
+	success_url = "/products/"
+	submit_btn = "Update"
+	title = "Update"
+
+class ProductDetailView(MultiSlugMixin, DetailView):
+	model = Product
 	def get_context_data(self, *args, **kwargs):
 		context = super(ProductDetailView, self).get_context_data(*args, **kwargs)
 		instance = self.get_object()
@@ -137,7 +153,7 @@ def create_view(request):
 	}
 	return render(request, template, context)
 
-def update_view(request, object_id=None):					
+def edit_view(request, object_id=None):					
 	product = get_object_or_404(Product, id=object_id)
 	form = ProductModelForm(request.POST or None, instance=Product)
 	if form.is_valid():
