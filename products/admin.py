@@ -2,7 +2,7 @@ from django.contrib import admin
 
 # Register your models here.
 
-from .models import Product, Variation, ProductImage, Category, ProductFeatured
+from .models import Product, Variation, ProductImage, Thumbnail, Category, ProductFeatured, MyProducts
 
 class ProductImageInline(admin.TabularInline):
 	model = ProductImage
@@ -20,8 +20,23 @@ class ProductAdmin(admin.ModelAdmin):
 	]
 	class Meta:
 		model = Product
+class ThumbnailInline(admin.TabularInline):
+	extra = 1
+	model = Thumbnail
+
+
+class ProductAdmin(admin.ModelAdmin):
+	inlines = [ThumbnailInline]
+	list_display = ["__unicode__", "description", "price"]
+	search_fields = ["title", "description"]
+	list_filter = ["price"]
+	#list_editable = ["sale_price"]
+	class Meta:
+		model = Product
 
 admin.site.register(Product, ProductAdmin)
 admin.site.register(ProductImage)
 admin.site.register(Category)
 admin.site.register(ProductFeatured)
+admin.site.register(MyProducts)
+admin.site.register(Thumbnail)

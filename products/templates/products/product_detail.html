@@ -39,6 +39,18 @@ $(".variation_select").change(function(){
 
 <p class='lead'>
 {{ object.description }}
+
+{% for img in object.thumbnail_set.all %}
+<img src="{{ img.media.url }}" /><br>
+ 
+{% endfor %}
+{% if request.user.is_authenticated and object.media %} 
+{% if object in request.user.myproducts.products.all %}
+<a href="{{ object.get_download }}?preview=True">Preview</a> | 
+<a href="{{ object.get_download }}">Download</a>
+{% endif %}
+{% endif %}
+
 </p>
 </div>
 

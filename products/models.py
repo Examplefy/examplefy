@@ -6,6 +6,12 @@ from django.utils.text import slugify
 from django.utils.safestring import mark_safe
 from django.db.models.signals import pre_save, post_save
 from django.utils.text import slugify
+from django.core.files.storage import FileSystemStorage
+import os
+import shutil
+from PIL import Image
+import random
+from django.core.files import File
 # Create your models here.
 
 class ProductQuerySet(models.QuerySet):
@@ -26,7 +32,7 @@ class ProductManager(models.Manager):
             return qs #self.get_queryset()
 
 def download_media_location(instance, filename):
-    return "%s/%s" %(instance.user.username, filename)
+    return "%s/%s" %(instance.slug, filename)
 
 class Product(models.Model):
 	title = models.CharField(max_length=120)
@@ -34,8 +40,9 @@ class Product(models.Model):
 	price = models.DecimalField(decimal_places=2, max_digits=1000, default=0.99)
 	active = models.BooleanField(default=True)
         slug = models.SlugField(blank=True, unique=True)
+        user = models.ForeignKey(settings.AUTH_USER_MODEL)
         managers = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name="managers_products", blank=True)
-        media = models.FileField(blank=True, null=True, upload_to=download_media_location)
+        media = models.FileField(blank=True, null=True, upload_to=download_media_location, storage=FileSystemStorage(location=settings.PROTECTED_ROOT))
         categories = models.ManyToManyField('Category', blank=True)
         default = models.ForeignKey('Category', related_name='default_category', null=True, blank=True)
     
@@ -43,6 +50,8 @@ class Product(models.Model):
 
         class Meta:
             ordering = ["title"]
+            verbose_name = "Product"
+            verbose_name_plural = "Products"
 
 	def __unicode__(self):
 		return self.title
@@ -54,6 +63,9 @@ class Product(models.Model):
             if img:
                 return img.image.url
             return img #none
+        def get_download(self):
+           url = reverse("download_slug", kwargs={"slug": self.slug})
+           return url
 
 def create_slug(instance, new_slug=None):
     slug = slugify(instance.title)
@@ -70,7 +82,81 @@ def create_slug(instance, new_slug=None):
 def product_pre_save_reciever(sender, instance, *args, **kwargs):
     if not instance.slug:
         instance.slug = create_slug(instance)
+
 pre_save.connect(product_pre_save_reciever, sender=Product)
+
+def thumbnail_location(instance, filename):
+    return "%s/%s" %(instance.product.slug, filename)
+THUMB_CHOICES = (
+    ("hd", "HD"),
+    ("sd", "SD"),
+    ("micro", "Micro"),
+)
+
+class Thumbnail(models.Model):
+    product = models.ForeignKey(Product)
+    type = models.CharField(max_length=20, choices=THUMB_CHOICES, default='hd')
+    height = models.CharField(max_length=20, null=True, blank=True) 
+    width = models.CharField(max_length=20, null=True, blank=True)
+    media = models.ImageField(width_field= "width", height_field="height", blank=True, null=True, upload_to=thumbnail_location)
+
+    def __unicode__(self):
+        return str(self.media.path)
+
+def create_new_thumb(media_path, instance, owner_slug, max_length, max_width):
+    filename = os.path.basename(media_path)
+    thumb = Image.open(media_path)
+    size = (max_length, max_width)
+    thumb.thumbnail(size, Image.ANTIALIAS)
+    temp_loc = "%s/%s/tmp" %(settings.MEDIA_ROOT, owner_slug)
+    if not os.path.exists(temp_loc):
+        os.makedirs(temp_loc)
+    temp_file_path = os.path.join(temp_loc, filename)
+    if os.path.exists(temp_file_path):
+        temp_path = os.path.join(temp_loc, "%s" %(random.random()))
+        os.makedirs(temp_path)
+        temp_file_path = os.path.join(temp_path, filename)
+
+    temp_image = open(temp_file_path, "w")
+    thumb.save(temp_image)
+    thumb_data = open(temp_file_path, "r")
+
+    thumb_file = File(thumb_data)
+    instance.media.save(filename, thumb_file)
+    shutil.rmtree(temp_loc, ignore_errors=True)
+    return True
+
+def product_post_save_reciever(sender, instance, created, *args, **kwargs):
+    hd, hd_created = Thumbnail.objects.get_or_create(product=instance, type='hd')
+    # sd, sd_created = Thumbnail.objects.get_or_create(product=instance, type='sd')
+    # micro, micro_created = Thumbnail.objects.get_or_create(product=instance, type='micro')
+
+    hd_max = (500, 500)
+    sd_max = (350, 350)
+    micro_max = (150, 150)
+
+    media_path = instance.media.path
+    owner_slug = instance.slug
+    if hd_created:
+        create_new_thumb(media_path, hd, owner_slug, hd_max[0], hd_max[1])
+    
+    # if sd_created:
+    #     create_new_thumb(media_path, sd, owner_slug, sd_max[0], sd_max[1])
+
+    # if micro_created:
+    #     create_new_thumb(media_path, micro, owner_slug, micro_max[0], micro_max[1])
+
+post_save.connect(product_post_save_reciever, sender=Product)
+
+class MyProducts(models.Model):
+    user = models.OneToOneField(settings.AUTH_USER_MODEL)
+    products = models.ManyToManyField(Product, blank=True)
+
+    def __unicode__(self):
+        return "%s" %(self.products.count())
+    class Meta:
+        verbose_name = "My Products"
+        verbose_name_plural = "My Products"
 
 class Variation(models.Model):
     product = models.ForeignKey(Product)
@@ -128,11 +214,18 @@ class ProductImage(models.Model):
     def __unicode__(self):
         return self.product.title
 
+    class Meta:
+        verbose_name = "Product Images"
+        verbose_name_plural = "Product Images"
+
 def image_upload_to_featured(instance, filename):
     title = instance.product.title
     slug = slugify(title)
     basename, file_extension = filename.split(".")
-    new_filename = "%s-%s.%s" %(slug, instance.id, file_extension)
+    qs = Product.objects.filter(slug=slug)
+    exists = qs.exists()
+    if qs:
+        new_filename = "%s-%s.%s" %(slug, qs.first().id, file_extension)
     return "products/%s/featured/%s" %(slug, new_filename)
 
 class ProductFeatured(models.Model):
@@ -145,6 +238,10 @@ class ProductFeatured(models.Model):
     make_image_background = models.BooleanField(default=False)
     active = models.BooleanField(default=True)
 
+    class Meta:
+        verbose_name = "Featured Product"
+        verbose_name_plural = "Featured Products"
+
     def __unicode__(self):
         return self.product.title
 
@@ -155,6 +252,10 @@ class Category(models.Model):
     description = models.TextField(null=True, blank=True)
     active = models.BooleanField(default=True)
     timestamp = models.DateTimeField(auto_now_add=True, auto_now=False)
+
+    class Meta:
+        verbose_name = "Category"
+        verbose_name_plural = "Categories"
 
     def __unicode__(self):
         return self.title

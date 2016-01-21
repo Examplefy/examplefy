@@ -1,9 +1,14 @@
+import os
+from django.conf import settings
+from mimetypes import guess_type
+from django.core.servers.basehttp import FileWrapper
 from django.shortcuts import render, get_object_or_404, redirect
 from django.views.generic.detail import DetailView
 from django.views.generic import View, TemplateView
 from django.http import Http404, HttpResponse, HttpResponseRedirect, JsonResponse
 from django.views.generic.list import ListView
 from django.views.generic.edit import CreateView, UpdateView
+from django.contrib.auth.models import User
 from django.db.models import Q
 from django.utils import timezone
 from .forms import VariationInventoryFormSet, ProductModelForm
@@ -91,13 +96,39 @@ class ProductListView(ListView):
 				pass
 		return qs
 
-class ProductAddView(SubmitMixin, CreateView):
+class ProductDownloadView(MultiSlugMixin, DetailView):
+	model = Product
+	def get(self, request, *args, **kwargs):
+		obj = self.get_object()
+		if obj in request.user.myproducts.products.all():
+			filepath = os.path.join(settings.PROTECTED_ROOT, obj.media.path)
+			guessed_type = guess_type(filepath)[0]
+			wrapper = FileWrapper(file(filepath))
+			mime_type = 'application/force-download'
+			if guessed_type:
+				mimetype = guessed_type
+			response = HttpResponse(wrapper, content_type=mimetype)
+
+			if not request.GET.get("preview"):
+				response["Content-Disposition"] = "attachment; filename=%s" %(obj.media.name)
+
+			response["X-SendFile"] = str(obj.media.name)
+			return response
+		else:
+			raise Http404
+
+class ProductAddView(LoginRequiredMixin, SubmitMixin, CreateView):
 	model = Product
 	form_class = ProductModelForm
 	template_name = "products/form.html"
-	success_url = "/products/add"
+	success_url = "/products/"
 	submit_btn = "Submit"
-	title = "Submit"
+	title = "Ask"
+	def form_valid(self, form):
+		user = self.request.user
+		form.instance.user = user
+		valid_data = super(ProductAddView, self).form_valid(form)
+		return valid_data
 
 class ProductUpdateView(SubmitMixin, MultiSlugMixin, UpdateView):
 	model = Product

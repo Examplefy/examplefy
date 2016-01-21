@@ -19,29 +19,29 @@ PUBLISH_CHOICES = (
 	("draft", "Draft"), 
 )
 
-class ProductAddForm(forms.Form):
-	title = forms.CharField(label='', widget=forms.TextInput(
-			attrs={
-			"placeholder": "Question...",
-		}))
-	description = forms.CharField(label='', widget=forms.Textarea(
-			attrs={
-			"placeholder": "Description...",
-		}))
-	# price = forms.DecimalField()
-	#publish = forms.ChoiceField(widget=forms.RadioSelect, choices=PUBLISH_CHOICES, required=True)
-	def clean_title(self):
-		title = self.cleaned_data.get("title")
-		if len(title) > 3:
-			return title
-		else: 
-			raise forms.ValidationError("Title must not be blank.")
-	def clean_desc(self):
-		desc = self.cleaned_data.get("description")
-		if len(desc) > 3:
-			return desc
-		else: 
-			raise forms.ValidationError("Description must not be blank.")
+# class ProductAddForm(forms.Form):
+# 	title = forms.CharField(label='', widget=forms.TextInput(
+# 			attrs={
+# 			"placeholder": "Question...",
+# 		}))
+# 	description = forms.CharField(label='', widget=forms.Textarea(
+# 			attrs={
+# 			"placeholder": "Description...",
+# 		}))
+# 	# price = forms.DecimalField()
+# 	#publish = forms.ChoiceField(widget=forms.RadioSelect, choices=PUBLISH_CHOICES, required=True)
+# 	def clean_title(self):
+# 		title = self.cleaned_data.get("title")
+# 		if len(title) > 3:
+# 			return title
+# 		else: 
+# 			raise forms.ValidationError("Title must not be blank.")
+# 	def clean_desc(self):
+# 		desc = self.cleaned_data.get("description")
+# 		if len(desc) > 3:
+# 			return desc
+# 		else: 
+# 			raise forms.ValidationError("Description must not be blank.")
 
 class ProductModelForm(forms.ModelForm):
 
@@ -50,6 +50,7 @@ class ProductModelForm(forms.ModelForm):
 		fields = [
 		"title",
 		"description",
+		"media",
 		]
 		widgets = {
 			"description": forms.Textarea(
@@ -78,9 +79,10 @@ class ProductModelForm(forms.ModelForm):
 			return title
 		else: 
 			raise forms.ValidationError("Title must not be blank.")
-	def clean_desc(self):
-		desc = self.cleaned_data.get("description")
-		if len(desc) > 3:
-			return desc
-		else: 
-			raise forms.ValidationError("Description must not be blank.")
+
+	# def clean_desc(self):
+	# 	desc = self.cleaned_data.get("description")
+	# 	if len(desc) > 3:
+	# 		return desc
+	# 	else: 
+	# 		raise forms.ValidationError("Description must not be blank.")
