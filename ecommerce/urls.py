@@ -3,8 +3,7 @@ from django.conf.urls import include, url
 from django.conf.urls.static import static
 from django.contrib import admin
 from carts.views import CartView
-import questions.views
-from questions.views import IndexView, DetailView, ResultsView, CreateQuestionView, EditQuestionView
+import answers.views
 
 urlpatterns = [
     # Examples:
@@ -18,6 +17,7 @@ urlpatterns = [
     url(r'^accounts/', include('registration.backends.default.urls')),
     url(r'^categories/', include('products.urls_categories')),
     url(r'^cart/$', CartView.as_view(), name='cart'),
+    url(r'^answers/', include("answers.urls", namespace='answers')),
     # url(r'^questions/$', questions.views.IndexView.as_view(), name='index'),
     # url(r'^questions/(?P<pk>[0-9]+)/$', questions.views.DetailView.as_view(), name='detail'),
     # url(r'^questions/(?P<pk>[0-9]+)/results/$', questions.views.ResultsView.as_view(), name='results'),

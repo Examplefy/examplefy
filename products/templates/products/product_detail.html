@@ -38,7 +38,7 @@ $(".variation_select").change(function(){
 
 
 <p class='lead'>
-{{ object.description }}
+{{ object.description }}<br>
 
 {% for img in object.thumbnail_set.all %}
 <img src="{{ img.media.url }}" /><br>
