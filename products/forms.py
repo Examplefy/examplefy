@@ -18,30 +18,20 @@ PUBLISH_CHOICES = (
 	("publish", "Publish"),
 	("draft", "Draft"), 
 )
+from .models import Variation, Category
 
-# class ProductAddForm(forms.Form):
-# 	title = forms.CharField(label='', widget=forms.TextInput(
-# 			attrs={
-# 			"placeholder": "Question...",
-# 		}))
-# 	description = forms.CharField(label='', widget=forms.Textarea(
-# 			attrs={
-# 			"placeholder": "Description...",
-# 		}))
-# 	# price = forms.DecimalField()
-# 	#publish = forms.ChoiceField(widget=forms.RadioSelect, choices=PUBLISH_CHOICES, required=True)
-# 	def clean_title(self):
-# 		title = self.cleaned_data.get("title")
-# 		if len(title) > 3:
-# 			return title
-# 		else: 
-# 			raise forms.ValidationError("Title must not be blank.")
-# 	def clean_desc(self):
-# 		desc = self.cleaned_data.get("description")
-# 		if len(desc) > 3:
-# 			return desc
-# 		else: 
-# 			raise forms.ValidationError("Description must not be blank.")
+
+
+class ProductFilterForm(forms.Form):
+	# q = forms.CharField(label='Search', required=False)
+	category_id = forms.ModelMultipleChoiceField(
+		label='Category',
+		queryset=Category.objects.all(), 
+		widget=forms.CheckboxSelectMultiple, 
+		required=False)
+	
+	# max_price = forms.DecimalField(decimal_places=2, max_digits=12, required=False)
+	# min_price = forms.DecimalField(decimal_places=2, max_digits=12, required=False)
 
 class ProductModelForm(forms.ModelForm):
 

@@ -61,7 +61,8 @@ INSTALLED_APPS = (
     'newsletter',
     "products",
     "carts",
-    "billing"
+    "billing",
+    "django_filters"
 )
 
 MIDDLEWARE_CLASSES = (

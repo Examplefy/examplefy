@@ -43,6 +43,28 @@ $(".variation_select").change(function(){
 	// var img = $(".variation_select option:selected").attr("data-img")
 	// $("img").attr("src", img);
 })
+$("#submit-btn").click(function(event){
+	event.preventDefault();
+	var formData = $("#add-form").serialize();
+	console.log(formData);
+	$.ajax({
+		type: "GET", // "POST"
+		url: "{% url 'cart' %}",
+		data: formData,
+		success: function(data) {
+			$("#jquery-message").text("Added " + data.item_added + " Deleted " + data.deleted)
+			showFlashMessage("Product added");
+			
+		}, 
+		error: function(response, error) {
+			// console.log(response)
+			// console.log(error)
+			$("#add-form").submit()
+		}
+	})
+	// $("#add-form").submit()
+})
+
 {% endblock %}
 </script>
 
@@ -93,14 +115,17 @@ $(".variation_select").change(function(){
 <div class='col-sm-4'>
 
 <!-- <h3 id='price'>{{ object.variation_set.first.price }}</h3> -->
-<form method='GET' action="{% url 'cart' %}">
+
+<form id='add-form' method='GET' action="{% url 'cart' %}">
+<p id='jquery-message' class='lead'>
+</p>
 	{% if object.variation_set.count > 1 %}
-	<!-- <h3 id='price'>{{ object.variation_set.first.price }}</h3> -->
+	<h3 id='price'>{{ object.variation_set.first.price }}</h3>
 
 	<select name='item' class='form-control variation_select'>
 		{% for vari_obj in object.variation_set.all %}
 		<!-- <option data-img="http://www.spirit1059.com/pics/Feeds/Articles/2015611/118317/Beach.jpg" data-price="{{ vari_obj.price }}" value="{{ vari_obj.id }}">{{ vari_obj }}</option> -->
-		<option  data-sale-price="{{ vari_obj.sale_price }}" data-price="{{ vari_obj.price }}" value="{{ vari_obj.id }}">{{ vari_obj }}</option>
+		<!-- <option  data-sale-price="{{ vari_obj.sale_price }}" data-price="{{ vari_obj.price }}" value="{{ vari_obj.id }}">{{ vari_obj }}</option> -->
 		{% endfor %}
 		</select>
 
@@ -108,19 +133,17 @@ $(".variation_select").change(function(){
 		<input type="hidden" name='item' value='{{ object.variation_set.first.id }}' />
 			<!-- <h3 id='price'>{% if object.variation_set.first.sale_price %}
 			{{ object.variation_set.first.sale_price  }}
-			<small class='og-price'>{{ object.variation_set.first.price }}</small> -->
+			<small class='og-price'>{{ object.variation_set.first.price }}</small>
 			{% else %}
 			
-			<!-- {{ object.variation_set.first.price }} -->
+			{{ object.variation_set.first.price }} -->
 			{% endif %}
 		</h3>
 
 
 	{% endif %}
 	<br/>
-	<!-- <input class='form-control' type='number' name='qty' value='1' /> -->
-<br/>
-<input type='submit' value='Add to Cart' class='btn btn-lg btn-primary' />
+<input id='submit-btn' type='submit' value='Add to Cart' class='btn btn-primary' />
 </form>
 
 <br/>

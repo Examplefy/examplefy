@@ -18,6 +18,7 @@ urlpatterns = [
     url(r'^categories/', include('products.urls_categories')),
     url(r'^cart/$', CartView.as_view(), name='cart'),
     url(r'^answers/', include("answers.urls", namespace='answers')),
+    #url(r'^cart/count/$', ItemCountView.as_view(), name='item_count'),
     # url(r'^questions/$', questions.views.IndexView.as_view(), name='index'),
     # url(r'^questions/(?P<pk>[0-9]+)/$', questions.views.DetailView.as_view(), name='detail'),
     # url(r'^questions/(?P<pk>[0-9]+)/results/$', questions.views.ResultsView.as_view(), name='results'),

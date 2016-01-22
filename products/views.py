@@ -1,6 +1,7 @@
 import os
 from django.conf import settings
 from mimetypes import guess_type
+from django.core.exceptions import ImproperlyConfigured
 from django.core.servers.basehttp import FileWrapper
 from django.shortcuts import render, get_object_or_404, redirect
 from django.views.generic.detail import DetailView
@@ -11,10 +12,11 @@ from django.views.generic.edit import CreateView, UpdateView
 from django.contrib.auth.models import User
 from django.db.models import Q
 from django.utils import timezone
-from .forms import VariationInventoryFormSet, ProductModelForm
+from .forms import VariationInventoryFormSet, ProductModelForm, ProductFilterForm
 from django.contrib import messages
 from answers.mixins import SellerAccountMixin
 from products.mixins import ProductManagerMixin
+from django_filters import FilterSet, CharFilter, NumberFilter
 import json
 from ecommerce.mixins import (
             LoginRequiredMixin,
@@ -79,32 +81,81 @@ class VariationListView(StaffRequiredMixin, ListView):
 			return redirect("products")
 		raise Http404
 
-class ProductListView(ListView):
+class ProductFilter(FilterSet):
+	title = CharFilter(name='title', lookup_type='icontains', distinct=True)
+	category = CharFilter(name='categories__title', lookup_type='icontains', distinct=True)
+	category_id = CharFilter(name='categories__id', lookup_type='icontains', distinct=True)
+	min_price = NumberFilter(name='variation__price', lookup_type='gte', distinct=True) # (some_price__gte=somequery)
+	max_price = NumberFilter(name='variation__price', lookup_type='lte', distinct=True)
+	class Meta:
+		model = Product
+		fields = [
+			'min_price',
+			'max_price',
+			'category',
+			'title',
+			'description',
+		]
+def product_list(request):
+	qs = Product.objects.all()
+	ordering = request.GET.get("ordering")
+	if ordering:
+		qs = Product.objects.all().order_by(ordering)
+	f = ProductFilter(request.GET, queryset=qs)
+	return render(request, "products/product_list.html", {"object_list": f })
+
+class FilterMixin(object):
+	filter_class = None
+	search_ordering_param = "ordering"
+
+	def get_queryset(self, *args, **kwargs):
+		try:
+			qs = super(FilterMixin, self).get_queryset(*args, **kwargs)
+			return qs
+		except:
+			raise ImproperlyConfigured("You must have a queryset in order to use the FilterMixin")
+
+	def get_context_data(self, *args, **kwargs):
+		context = super(FilterMixin, self).get_context_data(*args, **kwargs)
+		qs = self.get_queryset()
+		ordering = self.request.GET.get(self.search_ordering_param)
+		if ordering:
+			qs = qs.order_by(ordering)
+		filter_class = self.filter_class
+		if filter_class:
+			f = filter_class(self.request.GET, queryset=qs)
+			context["object_list"] = f
+		return context
+
+class ProductListView(FilterMixin, ListView):
 	model = Product
+	queryset = Product.objects.all()
+	filter_class = ProductFilter
+
 
 	def get_context_data(self, *args, **kwargs):
 		context = super(ProductListView, self).get_context_data(*args, **kwargs)
 		context["now"] = timezone.now()
-		context["query"] = self.request.GET.get("q") #none
+		context["query"] = self.request.GET.get("q") #None
+		context["filter_form"] = ProductFilterForm(data=self.request.GET or None)
 		return context
 
 	def get_queryset(self, *args, **kwargs):
 		qs = super(ProductListView, self).get_queryset(*args, **kwargs)
 		query = self.request.GET.get("q")
-		if query: #searches for title, desc, price
+		if query:
 			qs = self.model.objects.filter(
 				Q(title__icontains=query) |
 				Q(description__icontains=query)
 				)
 			try:
 				qs2 = self.model.objects.filter(
-				Q(price=query)
+					Q(price=query)
 				)
 				qs = (qs | qs2).distinct()
 			except:
 				pass
 		return qs
-
 
 class SellerProductListView(SellerAccountMixin, ListView):
 	model = Product
