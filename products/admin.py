@@ -25,16 +25,17 @@ class ThumbnailInline(admin.TabularInline):
 	model = Thumbnail
 
 
-class ProductAdmin(admin.ModelAdmin):
-	inlines = [ThumbnailInline]
-	list_display = ["__unicode__", "description", "price"]
-	search_fields = ["title", "description"]
-	list_filter = ["price"]
-	#list_editable = ["sale_price"]
-	class Meta:
-		model = Product
+# class ProductAdmin(admin.ModelAdmin):
+# 	inlines = [ThumbnailInline]
+# 	list_display = ["__unicode__", "description", "price", "media"]
+# 	search_fields = ["title", "description"]
+# 	#fields = ["title", "description", "embed_code", "slug"]
+# 	list_filter = ["price"]
+# 	#list_editable = ["sale_price"]
+# 	class Meta:
+# 		model = Product
 
-admin.site.register(Product, ProductAdmin)
+admin.site.register(Product)
 admin.site.register(ProductImage)
 admin.site.register(Category)
 admin.site.register(ProductFeatured)

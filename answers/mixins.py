@@ -3,7 +3,7 @@ import datetime
 from django.db.models import Count, Min, Sum, Avg, Max
 
 #from billing.models import Transaction
-from products.mixins import LoginRequiredMixin
+from ecommerce.mixins import LoginRequiredMixin
 from products.models import Product
 
 from .models import AnswerAccount

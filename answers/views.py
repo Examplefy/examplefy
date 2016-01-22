@@ -60,7 +60,7 @@ class SellerDashboard(SellerAccountMixin, FormMixin, View):
             account = account.first()
             active = account.active
 
-        #if no exists, show form
+        #if no account exists, show form
         #if exists and no active, show pending
         #if exists and active, show dashboard data
         if not exists and not active:
@@ -69,8 +69,8 @@ class SellerDashboard(SellerAccountMixin, FormMixin, View):
         elif exists and not active:
             context["title"] = "Account Pending"
         elif exists and active:
-            context["title"] = "Seller Dashboard"
-            # context["products"] = self.get_products() seller returns nil
+            context["title"] = "Answers Dashboard"
+            # context["products"] = self.get_products()
         else:
             pass
         

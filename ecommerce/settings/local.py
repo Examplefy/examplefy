@@ -61,6 +61,7 @@ INSTALLED_APPS = (
     'newsletter',
     "products",
     "carts",
+    "billing"
 )
 
 MIDDLEWARE_CLASSES = (

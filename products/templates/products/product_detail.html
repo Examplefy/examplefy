@@ -1,9 +1,33 @@
 {% extends "base.html" %}
 
-
-
 <script>
 {% block jquery %}
+
+function update_iframe_size(){
+	var parent_id = $("iframe").parent().attr("id");
+	if (parent_id == "main_video") {
+		var parent_class = $("iframe").parent().attr("class");
+		var parent_width = $("iframe").parent().width();
+		console.log(parent_class);
+		var width = $("iframe").css("width"); // $("iframe").width();
+		var height = $("iframe").css("height");
+		var ratio = parseInt(height)/parseInt(width);
+		var new_height = parseInt(parent_width) * ratio
+		$("iframe").css("width", parent_width);
+		$("iframe").css("height", new_height);
+	}
+}
+update_iframe_size()
+$(window).bind("resize", function(){
+	// alert("reized");
+	update_iframe_size();
+});
+$('.reply_btn').click(function(e){
+	e.preventDefault();
+	$(this).next(".reply_comment").fadeToggle();
+	// $(".reply_comment").fadeToggle();
+})
+
 function setPrice(){
 	var price = $(".variation_select option:selected").attr("data-price")
 	var sale_price = $(".variation_select option:selected").attr("data-sale-price")
@@ -29,31 +53,41 @@ $(".variation_select").change(function(){
 <div class='col-sm-8'>
 <h2>{{ object.title }}</h2>
 
-{% if object.get_image_url %}
-<div>
-<img id='img' class='img-responsive' src='{{ object.get_image_url }}' />
-</div>
+<p class='lead'>
+<b> {{ object.description }} </b><br>
+<br>
+
+<div class='col-sm-12' id='main_video'>
+	{% if object.embed_code %}
+{{ object.embed_code|safe }}
+	{% else %}
+	<b>Answer Pending!</b><br><br>
 {% endif %}
 
 
+{% if object.get_image_url %}
+<img id='img' class='img-responsive' src='{{ object.get_image_url }}' />
+{% endif %}
 
-<p class='lead'>
-{{ object.description }}<br>
 
-{% for img in object.thumbnail_set.all %}
-<img src="{{ img.media.url }}" /><br>
- 
-{% endfor %}
-{% if request.user.is_authenticated and object.media %} 
+{% if object.media %}
+{% if request.user.is_authenticated %} 
 {% if object in request.user.myproducts.products.all %}
+<a href="{{ object.get_absolute_url }}update">Update</a> |
+{% endif %}
 <a href="{{ object.get_download }}?preview=True">Preview</a> | 
 <a href="{{ object.get_download }}">Download</a>
 {% endif %}
 {% endif %}
 
+{% for img in object.thumbnail_set.all %}
+<a href="{{ object.get_download }}?preview=True"><img src="{{ img.media.url }}" class='img-responsive' /></a><br>
+ 
+{% endfor %}
+
 </p>
 </div>
-
+</div>
 
 <!-- Product Sidebar -->
 <div class='col-sm-4'>
@@ -86,7 +120,7 @@ $(".variation_select").change(function(){
 	<br/>
 	<!-- <input class='form-control' type='number' name='qty' value='1' /> -->
 <br/>
-<input type='submit' value='Add to Cart' class='btn btn-primary' />
+<input type='submit' value='Add to Cart' class='btn btn-lg btn-primary' />
 </form>
 
 <br/>
@@ -101,7 +135,7 @@ Share<br/>
 </p>
 
 <hr/>
-<h4>Related Products</h4>
+<h4>Related Answers</h4>
 
 	<div class='row'>
 	{% for product in related %}

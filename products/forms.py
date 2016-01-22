@@ -51,6 +51,7 @@ class ProductModelForm(forms.ModelForm):
 		"title",
 		"description",
 		"media",
+		"categories",
 		]
 		widgets = {
 			"description": forms.Textarea(
@@ -62,7 +63,12 @@ class ProductModelForm(forms.ModelForm):
 				attrs={
 					"placeholder": "Question..."
 				}
-			)
+			),	
+			"categories": forms.CheckboxSelectMultiple(
+				attrs={
+					"id": "topic_group"
+				}
+			),
 		}
 	def clean(self, *args, **kwargs):
 		cleaned_data = super(ProductModelForm, self).clean(*args, **kwargs)
@@ -79,6 +85,18 @@ class ProductModelForm(forms.ModelForm):
 			return title
 		else: 
 			raise forms.ValidationError("Title must not be blank.")
+	def clean_media(self):
+		media = self.cleaned_data.get("media")
+		if media is not None:
+			return media
+		else: 
+			raise forms.ValidationError("Please upload a question image.")
+	def clean_category(self):
+		categories = self.cleaned_data.get("categories")
+		if categories is not None:
+			return categories
+		else: 
+			raise forms.ValidationError("Please select a question category.")
 
 	# def clean_desc(self):
 	# 	desc = self.cleaned_data.get("description")

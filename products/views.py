@@ -13,11 +13,20 @@ from django.db.models import Q
 from django.utils import timezone
 from .forms import VariationInventoryFormSet, ProductModelForm
 from django.contrib import messages
-from .mixins import StaffRequiredMixin, LoginRequiredMixin, MultiSlugMixin, SubmitMixin
+from answers.mixins import SellerAccountMixin
+from products.mixins import ProductManagerMixin
 import json
+from ecommerce.mixins import (
+            LoginRequiredMixin,
+            StaffRequiredMixin,
+            MultiSlugMixin, 
+            SubmitMixin,
+            AjaxRequiredMixin
+            )
+
 # Create your views here.
 
-from .models import Product, Variation, Category
+from .models import Product, Variation, Category, ProductManager
 
 class CategoryListView(ListView):
 	model = Category
@@ -96,41 +105,69 @@ class ProductListView(ListView):
 				pass
 		return qs
 
+
+class SellerProductListView(SellerAccountMixin, ListView):
+	model = Product
+	template_name = "answers/product_list_view.html"
+
+	def get_queryset(self, *args, **kwargs):
+		qs = super(SellerProductListView, self).get_queryset(*args, **kwargs)
+		qs = qs.filter(seller=self.get_account())
+		query = self.request.GET.get("q")
+		if query: #searches for title, desc, price
+			qs = self.model.objects.filter(
+				Q(title__icontains=query) |
+				Q(description__icontains=query)
+				)
+			try:
+				qs2 = self.model.objects.filter(
+				Q(price=query)
+				)
+				qs = (qs | qs2).distinct()
+			except:
+				pass
+		return qs
+
 class ProductDownloadView(MultiSlugMixin, DetailView):
 	model = Product
+
 	def get(self, request, *args, **kwargs):
 		obj = self.get_object()
-		if obj in request.user.myproducts.products.all():
+		if request.user.is_authenticated():
 			filepath = os.path.join(settings.PROTECTED_ROOT, obj.media.path)
 			guessed_type = guess_type(filepath)[0]
 			wrapper = FileWrapper(file(filepath))
-			mime_type = 'application/force-download'
+			mimetype = 'application/force-download'
 			if guessed_type:
 				mimetype = guessed_type
 			response = HttpResponse(wrapper, content_type=mimetype)
-
+			
 			if not request.GET.get("preview"):
 				response["Content-Disposition"] = "attachment; filename=%s" %(obj.media.name)
-
+			
 			response["X-SendFile"] = str(obj.media.name)
 			return response
 		else:
-			raise Http404
+			messages.success(request, "Please login to continue.")
+			return redirect("products")
 
-class ProductAddView(LoginRequiredMixin, SubmitMixin, CreateView):
+class ProductAddView(SellerAccountMixin, SubmitMixin, CreateView):
 	model = Product
 	form_class = ProductModelForm
 	template_name = "products/form.html"
 	success_url = "/products/"
-	submit_btn = "Submit"
+	submit_btn = "Ask For Free"
+	submit_btn2 = "Ask Premium"
 	title = "Ask"
 	def form_valid(self, form):
-		user = self.request.user
-		form.instance.user = user
+		# user = self.request.user
+		# form.instance.user = user
+		seller = self.get_account()
+		form.instance.seller = seller
 		valid_data = super(ProductAddView, self).form_valid(form)
 		return valid_data
 
-class ProductUpdateView(SubmitMixin, MultiSlugMixin, UpdateView):
+class ProductUpdateView(ProductManagerMixin, SubmitMixin, MultiSlugMixin, UpdateView):
 	model = Product
 	form_class = ProductModelForm
 	template_name = "products/form.html"
@@ -162,27 +199,20 @@ def product_detail_view_func(request, id):
 	}
 	return render(request, template, context)
 
-def create_view(request):
-	model = Product
-	def get_queryset(self, *args, **kwargs):
-		qs = super(ProductListView, self).get_context_data(**kwargs)
-		return qs
-	form = ProductModelForm(request.POST or None)
+def create_view(request): 
+	form = ProductModelForm(request.POST or None, request.FILES or None)
 	if form.is_valid():
+		print form.cleaned_data.get("publish")
 		instance = form.save(commit=False)
-		instance.user = request.user
+		instance.sale_price = instance.price
 		instance.save()
-		messages.success(request, "Your Question has been saved.")
-		# data = form.cleaned_data
-		# title = data.get("title")
-		# description = data.get("description")
-		# #price = data.get("price")
-		# new_obj = Product.objects.create(title=title, description=description)
-	template = "products/create_view.html"
+	template = "form.html"
 	context = {
-		"form": form,
-	}
+			"form": form,
+			"submit_btn": "Create Product"
+		}
 	return render(request, template, context)
+
 
 def edit_view(request, object_id=None):					
 	product = get_object_or_404(Product, id=object_id)
