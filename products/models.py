@@ -103,7 +103,7 @@ class Thumbnail(models.Model):
     media = models.ImageField(width_field= "width", height_field="height", blank=True, null=True, upload_to=thumbnail_location)
 
     def __unicode__(self):
-        return str(self.media.path)
+        return str(self.media)
 
 def create_new_thumb(media_path, instance, owner_slug, max_length, max_width):
     filename = os.path.basename(media_path)
@@ -182,7 +182,7 @@ class Variation(models.Model):
         if self.sale_price is not None:
             html_text = "<span class='sale-price'>%s</span> <span class='og-price'>%s</span>" %(self.sale_price, self.price)
         else:
-            html_text = "<span class='price'>%s</span>" %( self.price)
+            html_text = "<span class='price'>%s</span>" %(self.price)
         return mark_safe(html_text)
 
     def get_absolute_url(self):

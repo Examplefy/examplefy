@@ -2,7 +2,7 @@ from decimal import Decimal
 from django.conf import settings
 from django.core.urlresolvers import reverse
 from django.db import models
-from django.db.models.signals import pre_save, post_save
+from django.db.models.signals import pre_save, post_save, post_delete
 
 
 from products.models import Variation
@@ -31,17 +31,26 @@ def cart_item_pre_save_receiver(sender, instance, *args, **kwargs):
 
 pre_save.connect(cart_item_pre_save_receiver, sender=CartItem)
 
+
+
 def cart_item_post_save_receiver(sender, instance, *args, **kwargs):
 	instance.cart.update_subtotal()
 
 post_save.connect(cart_item_post_save_receiver, sender=CartItem)
+
+post_delete.connect(cart_item_post_save_receiver, sender=CartItem)
+
+
 
 class Cart(models.Model):
 	user = models.ForeignKey(settings.AUTH_USER_MODEL, null=True, blank=True)
 	items = models.ManyToManyField(Variation, through=CartItem)
 	timestamp = models.DateTimeField(auto_now_add=True, auto_now=False)
 	updated = models.DateTimeField(auto_now_add=False, auto_now=True)
-	subtotal = models.DecimalField(max_digits=50, decimal_places=2)
+	subtotal = models.DecimalField(max_digits=50, decimal_places=2, default=1.99)
+	tax_total = models.DecimalField(max_digits=50, decimal_places=2, default=1.99)
+	total = models.DecimalField(max_digits=50, decimal_places=2, default=1.99)
+	#student referral discounts!
 
 	def __unicode__(self):
 		return str(self.id)
@@ -51,12 +60,17 @@ class Cart(models.Model):
 		items = self.cartitem_set.all()
 		for item in items:
 			subtotal+= item.line_item_total
-		self.subtotal = subtotal
+		self.subtotal = "%.2f" %(subtotal)
 		self.save()
 
-
-
-
+def tax_and_total_reciever(sender, instance, *args, **kwargs):
+		subtotal = Decimal(instance.subtotal)
+		tax_total = round(subtotal * Decimal(0.0875), 2)
+		total = round(subtotal + Decimal(tax_total), 2)
+		instance.tax_total = "%.2f" %(tax_total)
+		instance.total = "%.2f" %(total)
+		#instance.save()
+pre_save.connect(tax_and_total_reciever, sender=Cart)
 
 
 

@@ -22,10 +22,23 @@ $(".item-qty").change(function(){
 			$("#jquery-message").text("Added " + data.item_added + " Deleted " + data.deleted)
 			if (data.deleted){
 				$("#item-"+item).fadeOut();
+				$("#subtotal").text(data.subtotal);
+				$("#taxtotal").text(data.tax_total);
+				$("#carttotal").text(data.cart_total);
 			} else {
 				$("#item-line-total-"+item).text(data.line_total);
 				$("#subtotal").text(data.subtotal);
+				$("#taxtotal").text(data.tax_total);
+				$("#carttotal").text(data.cart_total);
 			}
+
+			if (data.total_items == 0) {
+				$(".table").fadeOut()
+				var template = "{% include "carts/empty_cart.html" %}"; 
+				$(".main-content").html(template);
+			}
+		showFlashMessage(data.flash_message);
+		updateCartItemCount()
 		}, 
 		error: function(response, error) {
 			// console.log(response)
@@ -38,8 +51,12 @@ $(".item-qty").change(function(){
 </script>
 
 {% block content %}
+<div class='row main-content'>
+{% if object.cartitem_set.count < 1 %}
 
-<h1>My Cart</h1>
+{% include "carts/empty_cart.html" %}
+{% else %}
+<div class='col-sm-6 col-sm-offset-3 text-center'><h1>Your Answers</h1></div>
 <table class='table'> 
 
 {% for item in object.cartitem_set.all %}
@@ -49,24 +66,30 @@ $(".item-qty").change(function(){
 <td>{{ item.item.get_title }}</td>
 
 
-<td><form action="." method="GET" ><input type='hidden' name='item' value='{{ item.item.id }}' /><input type='number' class='item-qty' name='qty' value='{{ item.quantity }}' /><input type='submit' class='btn-update btn btn-link' value='Update item' style='display:none;'/></form></td>
-<td id='item-line-total-{{ item.item.id }}'>{{ item.line_item_total }}</td>
-<td class='text-right' ><a href='{{ item.remove }}'>X</a>
+<td><!-- <form action="." method="GET" ><input type='hidden' name='item' value='{{ item.item.id }}' /><input type='number' class='item-qty' name='qty' value='{{ item.quantity }}' /><input type='submit' class='btn-update btn btn-link' value='Update item' style='display:none;'/></form> --></td>
+<td id='item-line-total-{{ item.item.id }}'>${{ item.line_item_total }}</td>
+<td class='text-right' ><a class='btn btn-primary' href='{{ item.remove }}'>Remove</a>
 
 
 
 </td>
 
 
-</tr>
 
 {% endfor %}
-
-
 <tr>
-<td id='subtotal' colspan='4' class='text-right'>Subtotal: {{ object.subtotal }}</td>
+<td colspan='4' class='text-right'><span id='subtotal'>Subtotal: ${{ object.subtotal }}</span></td>
+</tr>
+<tr>
+<td colspan='4' class='text-right'><span id='taxtotal'>Tax (Estimated): {{ object.tax_total }}%</span></td>
+</tr>
+<tr>
+<td colspan='4' class='text-right'><span id='carttotal'>Total: ${{ object.total }}</span></td>
+</tr>
 
 </tr>
 
 </table>
+</div>
+{% endif %}
 {% endblock %}
