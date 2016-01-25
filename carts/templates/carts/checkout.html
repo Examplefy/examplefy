@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% load crispy_forms_tags %}
+
+{% block content %}
+
+{% if not user_continue %}
+<h1>Checkout</h1>
+<div class='col-sm-6'>
+<p class="lead">Continue As Guest</p>
+</div>
+
+<div class='col-sm-6'>
+	<p class="lead">Login to Checkout</p>
+<form method="POST" action="{% url 'auth_login' %}">{% csrf_token %}
+{{ login_form|crispy }}
+<input type="hidden" name="next" value='{{ next_url }}' />
+<input type='submit' class='btn btn-success' value='Login' />
+</form>
+</div>
+{% endif %}
+{% endblock %}

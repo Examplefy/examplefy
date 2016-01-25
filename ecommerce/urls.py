@@ -2,7 +2,7 @@ from django.conf import settings
 from django.conf.urls import include, url
 from django.conf.urls.static import static
 from django.contrib import admin
-from carts.views import CartView, ItemCountView
+from carts.views import CartView, ItemCountView, CheckoutView
 import answers.views
 
 urlpatterns = [
@@ -18,6 +18,7 @@ urlpatterns = [
     url(r'^categories/', include('products.urls_categories')),
     url(r'^cart/$', CartView.as_view(), name='cart'),
     url(r'^cart/count/$', ItemCountView.as_view(), name='item_count'),
+    url(r'^checkout/$', CheckoutView.as_view(), name='checkout'),
     # url(r'^answers/', include("answers.urls", namespace='answers')),
     # url(r'^questions/$', questions.views.IndexView.as_view(), name='index'),
     # url(r'^questions/(?P<pk>[0-9]+)/$', questions.views.DetailView.as_view(), name='detail'),
