@@ -17,3 +17,13 @@ class Transaction(models.Model):
 	
 	def __unicode__(self):
 		return "%s" %(self.id)
+
+class UserCheckout(models.Model):
+	user = models.ForeignKey(settings.AUTH_USER_MODEL, null=True, blank=True)
+	email = models.EmailField()
+
+	def __unicode__(self):
+		return self.email
+
+#class Order(models.Model):
+	#cart
