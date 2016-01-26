@@ -175,9 +175,9 @@ TEMPLATE_DIRS = (
 STATIC_URL = '/static/'
 PROJECT_DIR = os.path.abspath(os.path.dirname(__file__))
 STATIC_ROOT = os.path.join(PROJECT_DIR,'static_in_pro', "our_static")
-# STATICFILES_DIRS = (
-#     os.path.join(PROJECT_ROOT,'static_in_pro', "our_static"),
-# )
+STATICFILES_DIRS = (
+    os.path.join(BASE_DIR, "ecommerce/static_in_pro"),
+)
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(os.path.dirname(BASE_DIR), "static_in_pro", "media_root")
