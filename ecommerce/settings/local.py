@@ -172,11 +172,11 @@ TEMPLATE_DIRS = (
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.8/howto/static-files/
 
+STATIC_ROOT = 'staticfiles'
 STATIC_URL = '/static/'
-PROJECT_DIR = os.path.abspath(os.path.dirname(__file__))
-STATIC_ROOT = os.path.join(PROJECT_DIR,'static_in_pro', "our_static")
+
 STATICFILES_DIRS = (
-    os.path.join(BASE_DIR, "ecommerce/static_in_pro"),
+    os.path.join(BASE_DIR, 'static'),
 )
 
 MEDIA_URL = '/media/'
