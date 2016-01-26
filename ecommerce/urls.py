@@ -35,4 +35,4 @@ if settings.DEBUG:
 
 if not settings.DEBUG:
     AWS_STORAGE_BUCKET_NAME = os.environ['AWS_STORAGE_BUCKET_NAME']
-    STATICFILES_STORAGE = 'storages.backends.s3boto.S3BotoStorage'
+#     STATICFILES_STORAGE = 'storages.backends.s3boto.S3BotoStorage'
