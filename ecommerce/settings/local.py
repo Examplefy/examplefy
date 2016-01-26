@@ -182,11 +182,15 @@ MEDIA_ROOT = os.path.join(os.path.dirname(BASE_DIR), "static", "media_root")
 
 PROTECTED_ROOT = os.path.join(os.path.dirname(BASE_DIR), "static", "protected_root")
 
-STATICFILES_DIRS = (
-    os.path.join(BASE_DIR, "static"),
-    #os.path.join(BASE_DIR, "static_in_env"),
-    #'/var/www/static/',
-)
+PROJECT_DIR = os.path.dirname(__file__)
+
+STATICFILES_DIRS = (os.path.join(PROJECT_DIR, 'static'),)
+
+# STATICFILES_DIRS = (
+#     os.path.join(BASE_DIR, "static"),
+#     #os.path.join(BASE_DIR, "static_in_env"),
+#     #'/var/www/static/',
+# )
 #Crispy FORM TAGs SETTINGS
 CRISPY_TEMPLATE_PACK = 'bootstrap3'
 
