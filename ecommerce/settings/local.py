@@ -23,7 +23,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__fil
 SECRET_KEY = 'csqwlmc8s55o($rt6ozh7u+ui9zb-et00w$d90j8$^!nvj41_r'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ['*']
 
@@ -182,7 +182,7 @@ MEDIA_ROOT = os.path.join(os.path.dirname(BASE_DIR), "static", "media_root")
 PROTECTED_ROOT = os.path.join(os.path.dirname(BASE_DIR), "static", "protected_root")
 
 STATICFILES_DIRS = (
-    os.path.join(BASE_DIR, "../static/"),
+    os.path.join(BASE_DIR, "static", "static_root"),
     #os.path.join(BASE_DIR, "static_in_env"),
     #'/var/www/static/',
 )
