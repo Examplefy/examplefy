@@ -124,7 +124,7 @@ STATIC_ROOT = 'staticfiles'
 STATIC_URL = '/static_in_pro/'
 
 STATICFILES_DIRS = (
-    os.path.join(BASE_DIR, '../static_in_pro/'),
+    os.path.join(BASE_DIR, 'settings/static_in_pro'),
 )
 
 MEDIA_URL = '/img/'
