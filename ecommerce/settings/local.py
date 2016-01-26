@@ -23,12 +23,12 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__fil
 SECRET_KEY = 'csqwlmc8s55o($rt6ozh7u+ui9zb-et00w$d90j8$^!nvj41_r'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ['*']
 
 EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_HOST_USER = 'examplfy@gmail.com'
+EMAIL_HOST_USER = 'examplefy@gmail.com'
 EMAIL_HOST_PASSWORD = 'yourpassword'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
@@ -62,7 +62,9 @@ INSTALLED_APPS = (
     "products",
     "carts",
     "billing",
-    "django_filters"
+    "django_filters",
+    "storages",
+    'gunicorn',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -171,9 +173,9 @@ TEMPLATE_DIRS = (
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.8/howto/static-files/
 
-STATIC_ROOT = 'staticfiles'
+# STATIC_ROOT = 'staticfiles'
 STATIC_URL = '/static/'
-#STATIC_ROOT = os.path.join(BASE_DIR, "static", "static_root")
+STATIC_ROOT = os.path.join(BASE_DIR, "static", "static_root")
     
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(os.path.dirname(BASE_DIR), "static", "media_root")
