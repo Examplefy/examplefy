@@ -133,8 +133,8 @@ S3_URL = 'http://%s.s3.amazonaws.com/' % AWS_STORAGE_BUCKET_NAME
 STATIC_URL = S3_URL
 
 # #BOTO S3 Storage for Production ONLY
-STATICFILES_STORAGE = 'storages.backends.s3boto.S3BotoStorage'
-DEFAULT_FILE_STORAGE = 'storages.backends.s3boto.S3BotoStorage'
+# STATICFILES_STORAGE = 'storages.backends.s3boto.S3BotoStorage'
+# DEFAULT_FILE_STORAGE = 'storages.backends.s3boto.S3BotoStorage'
 
 #Parse database configuration from $DATABASE_URL
 import dj_database_url
@@ -182,15 +182,11 @@ MEDIA_ROOT = os.path.join(os.path.dirname(BASE_DIR), "static", "media_root")
 
 PROTECTED_ROOT = os.path.join(os.path.dirname(BASE_DIR), "static", "protected_root")
 
-PROJECT_DIR = os.path.dirname(__file__)
-
-STATICFILES_DIRS = (os.path.join(PROJECT_DIR, 'static'),)
-
-# STATICFILES_DIRS = (
-#     os.path.join(BASE_DIR, "static"),
-#     #os.path.join(BASE_DIR, "static_in_env"),
-#     #'/var/www/static/',
-# )
+STATICFILES_DIRS = (
+    os.path.join(BASE_DIR, "static"),
+    #os.path.join(BASE_DIR, "static_in_env"),
+    #'/var/www/static/',
+)
 #Crispy FORM TAGs SETTINGS
 CRISPY_TEMPLATE_PACK = 'bootstrap3'
 
