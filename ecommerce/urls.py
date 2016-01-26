@@ -28,11 +28,6 @@ urlpatterns = [
     # url(r'^questions/create/$', questions.views.CreateQuestionView.as_view(), name='create'),
     # url(r'^questions/edit/(?P<pk>\d+)/$', questions.views.EditQuestionView.as_view(), name='edit'),
 ]
-urlpatterns += patterns('',
-    url(r'^static/(?P<path>.*)$', 'django.views.static.serve', {
-        'document_root': settings.STATIC_ROOT,
-    }),
-)
 
 if settings.DEBUG:
 	urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

@@ -130,11 +130,11 @@ AWS_STORAGE_BUCKET_NAME = 'examplefy'
 S3_URL = 'http://%s.s3.amazonaws.com/' % AWS_STORAGE_BUCKET_NAME
 STATIC_URL = S3_URL
 
-#BOTO S3 Storage for Production ONLY
+# #BOTO S3 Storage for Production ONLY
 STATICFILES_STORAGE = 'storages.backends.s3boto.S3BotoStorage'
 DEFAULT_FILE_STORAGE = 'storages.backends.s3boto.S3BotoStorage'
 
-# Parse database configuration from $DATABASE_URL
+#Parse database configuration from $DATABASE_URL
 import dj_database_url
 DATABASES['default'] =  dj_database_url.config()
 
@@ -149,7 +149,7 @@ STATICFILES_STORAGE = 'whitenoise.django.GzipManifestStaticFilesStorage'
 # STATIC_ROOT = os.path.join(os.path.dirname(BASE_DIR), "static", "static_root")
 
 MEDIA_URL = S3_URL
-MEDIA_ROOT = os.path.join(os.path.dirname(BASE_DIR), "static_in_ev", "media_root")
+MEDIA_ROOT = os.path.join(os.path.dirname(BASE_DIR), "static", "media_root")
 
 # TEMPLATE_DIRS = (
 #     os.path.join(BASE_DIR, "templates"),
@@ -168,15 +168,14 @@ TEMPLATE_DIRS = (
 )
 
 '''Static storage'''
-
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.8/howto/static-files/
 
-STATIC_ROOT = os.path.join(BASE_DIR, "static", "static_root")
+# STATIC_ROOT = 'staticfiles'
 STATIC_URL = '/static/'
-#STATIC_ROOT = os.path.join(os.path.dirname(BASE_DIR), "static", "static_root")
+STATIC_ROOT = os.path.join(BASE_DIR, "static", "static_root")
     
-#MEDIA_URL = '/media/'
+MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(os.path.dirname(BASE_DIR), "static", "media_root")
 
 PROTECTED_ROOT = os.path.join(os.path.dirname(BASE_DIR), "static", "protected_root")
