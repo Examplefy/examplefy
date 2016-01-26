@@ -75,12 +75,12 @@ class ProductModelForm(forms.ModelForm):
 			return title
 		else: 
 			raise forms.ValidationError("Title must not be blank.")
-	def clean_media(self):
-		media = self.cleaned_data.get("media")
-		if media is not None:
-			return media
-		else: 
-			raise forms.ValidationError("Please upload a question image.")
+	# def clean_media(self):
+	# 	media = self.cleaned_data.get("media")
+	# 	if media is not None:
+	# 		return media
+	# 	else: 
+	# 		raise forms.ValidationError("Please upload a question image.")
 	def clean_category(self):
 		categories = self.cleaned_data.get("categories")
 		if categories is not None:

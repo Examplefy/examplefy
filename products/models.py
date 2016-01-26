@@ -137,10 +137,11 @@ def product_post_save_reciever(sender, instance, created, *args, **kwargs):
     sd_max = (350, 350)
     micro_max = (150, 150)
 
-    media_path = instance.media.path
-    owner_slug = instance.slug
-    if hd_created:
-        create_new_thumb(media_path, hd, owner_slug, hd_max[0], hd_max[1])
+    if instance.media:
+        media_path = instance.media.path
+        owner_slug = instance.slug
+        if hd_created:
+            create_new_thumb(media_path, hd, owner_slug, hd_max[0], hd_max[1])
     
     # if sd_created:
     #     create_new_thumb(media_path, sd, owner_slug, sd_max[0], sd_max[1])

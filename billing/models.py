@@ -20,7 +20,7 @@ class Transaction(models.Model):
 
 class UserCheckout(models.Model):
 	user = models.ForeignKey(settings.AUTH_USER_MODEL, null=True, blank=True)
-	email = models.EmailField()
+	email = models.EmailField(unique=True)
 
 	def __unicode__(self):
 		return self.email

@@ -7,7 +7,13 @@
 {% if not user_continue %}
 <h1>Checkout</h1>
 <div class='col-sm-6'>
+	
 <p class="lead">Continue As Guest</p>
+<form method="POST" action=''>{% csrf_token %}
+{{ form|crispy }}
+<input type='submit' class='btn btn-success' value='Continue As Guest' />
+</form>
+
 </div>
 
 <div class='col-sm-6'>

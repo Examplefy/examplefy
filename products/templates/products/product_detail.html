@@ -102,10 +102,10 @@ $("#submit-btn").click(function(event){
 {% endif %}
 {% endif %}
 
-{% for img in object.thumbnail_set.all %}
+{% if img in object.thumbnail_set.all %}
 <a href="{{ object.get_download }}?preview=True"><img src="{{ img.media.url }}" class='img-responsive' /></a><br>
  
-{% endfor %}
+{% endif %}
 
 </p>
 </div>
