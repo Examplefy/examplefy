@@ -121,51 +121,51 @@ USE_L10N = True
 
 USE_TZ = True
 
-# '''Image storage Amazon S3'''
+'''Image storage Amazon S3'''
 
-# AWS_ACCESS_KEY_ID = os.environ.get('AWS_ACCESS_KEY_ID')
-# AWS_SECRET_ACCESS_KEY = os.environ.get('AWS_SECRET_ACCESS_KEY')
-# AWS_STORAGE_BUCKET_NAME = 'examplefy'
+AWS_ACCESS_KEY_ID = os.environ.get('AWS_ACCESS_KEY_ID')
+AWS_SECRET_ACCESS_KEY = os.environ.get('AWS_SECRET_ACCESS_KEY')
+AWS_STORAGE_BUCKET_NAME = 'examplefy'
 
-# S3_URL = 'http://%s.s3.amazonaws.com/' % AWS_STORAGE_BUCKET_NAME
-# STATIC_URL = S3_URL
+S3_URL = 'http://%s.s3.amazonaws.com/' % AWS_STORAGE_BUCKET_NAME
+STATIC_URL = S3_URL
 
-# #BOTO S3 Storage for Production ONLY
-# STATICFILES_STORAGE = 'storages.backends.s3boto.S3BotoStorage'
-# DEFAULT_FILE_STORAGE = 'storages.backends.s3boto.S3BotoStorage'
+#BOTO S3 Storage for Production ONLY
+STATICFILES_STORAGE = 'storages.backends.s3boto.S3BotoStorage'
+DEFAULT_FILE_STORAGE = 'storages.backends.s3boto.S3BotoStorage'
 
-# # Parse database configuration from $DATABASE_URL
-# import dj_database_url
-# DATABASES['default'] =  dj_database_url.config()
+# Parse database configuration from $DATABASE_URL
+import dj_database_url
+DATABASES['default'] =  dj_database_url.config()
 
-# # Honor the 'X-Forwarded-Proto' header for request.is_secure()
-# SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+# Honor the 'X-Forwarded-Proto' header for request.is_secure()
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
-# # Simplified static file serving.
-# # https://warehouse.python.org/project/whitenoise/
+# Simplified static file serving.
+# https://warehouse.python.org/project/whitenoise/
 
-# STATICFILES_STORAGE = 'whitenoise.django.GzipManifestStaticFilesStorage'
+STATICFILES_STORAGE = 'whitenoise.django.GzipManifestStaticFilesStorage'
 
-# # STATIC_ROOT = os.path.join(os.path.dirname(BASE_DIR), "static", "static_root")
+# STATIC_ROOT = os.path.join(os.path.dirname(BASE_DIR), "static", "static_root")
 
-# MEDIA_URL = S3_URL
-# MEDIA_ROOT = os.path.join(os.path.dirname(BASE_DIR), "static_in_pro", "media_root")
-
-# # TEMPLATE_DIRS = (
-# #     os.path.join(BASE_DIR, "templates"),
-# # )
-# # here() gives us file paths from the root of the system to the directory
-# # holding the current file.
-# here = lambda * x: os.path.join(os.path.abspath(os.path.dirname(__file__)), *x)
-
-# PROJECT_ROOT = here("..")
-# # root() gives us file paths from the root of the system to whatever
-# # folder(s) we pass it starting at the parent directory of the current file.
-# root = lambda * x: os.path.join(os.path.abspath(PROJECT_ROOT), *x)
+MEDIA_URL = S3_URL
+MEDIA_ROOT = os.path.join(os.path.dirname(BASE_DIR), "static_in_pro", "media_root")
 
 # TEMPLATE_DIRS = (
-#     root('templates'),
+#     os.path.join(BASE_DIR, "templates"),
 # )
+# here() gives us file paths from the root of the system to the directory
+# holding the current file.
+here = lambda * x: os.path.join(os.path.abspath(os.path.dirname(__file__)), *x)
+
+PROJECT_ROOT = here("..")
+# root() gives us file paths from the root of the system to whatever
+# folder(s) we pass it starting at the parent directory of the current file.
+root = lambda * x: os.path.join(os.path.abspath(PROJECT_ROOT), *x)
+
+TEMPLATE_DIRS = (
+    root('templates'),
+)
 
 '''Static storage'''
 
