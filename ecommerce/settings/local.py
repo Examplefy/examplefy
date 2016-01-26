@@ -149,7 +149,7 @@ STATICFILES_STORAGE = 'whitenoise.django.GzipManifestStaticFilesStorage'
 # STATIC_ROOT = os.path.join(os.path.dirname(BASE_DIR), "static", "static_root")
 
 MEDIA_URL = S3_URL
-MEDIA_ROOT = os.path.join(os.path.dirname(BASE_DIR), "static", "media")
+MEDIA_ROOT = os.path.join(os.path.dirname(BASE_DIR), "static_in_pro", "media_root")
 
 # TEMPLATE_DIRS = (
 #     os.path.join(BASE_DIR, "templates"),
@@ -173,7 +173,7 @@ TEMPLATE_DIRS = (
 # https://docs.djangoproject.com/en/1.8/howto/static-files/
 
 STATIC_URL = '/static/'
-
+PROJECT_DIR = os.path.abspath(os.path.dirname(__file__))
 STATIC_ROOT = os.path.join(PROJECT_DIR,'static_in_pro', "our_static")
 STATICFILES_DIRS = (
     os.path.join(PROJECT_ROOT,'static_in_pro', "our_static"),
