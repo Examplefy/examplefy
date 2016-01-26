@@ -4,6 +4,7 @@ from django.conf.urls.static import static
 from django.contrib import admin
 from carts.views import CartView, ItemCountView, CheckoutView
 import answers.views
+import os
 
 urlpatterns = [
     # Examples:
