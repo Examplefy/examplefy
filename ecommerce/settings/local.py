@@ -172,15 +172,15 @@ TEMPLATE_DIRS = (
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.8/howto/static-files/
 
-STATIC_URL = '/static/'
-PROJECT_DIR = os.path.abspath(os.path.dirname(__file__))
-STATIC_ROOT = os.path.join(PROJECT_DIR,'static_in_pro', "our_static")
+STATIC_ROOT = 'staticfiles'
+STATIC_URL = '/static_in_pro/'
+
 STATICFILES_DIRS = (
-    os.path.join(PROJECT_ROOT,'static_in_pro', "our_static"),
+    os.path.join(BASE_DIR, '../static_in_pro/'),
 )
 
-MEDIA_URL = '/media/'
-MEDIA_ROOT = os.path.join(os.path.dirname(BASE_DIR), "static_in_pro", "media_root")
+MEDIA_URL = '/img/'
+MEDIA_ROOT = os.path.join(os.path.dirname(BASE_DIR), "our_static", "img")
 
 PROTECTED_ROOT = os.path.join(os.path.dirname(BASE_DIR), "static_in_pro", "protected_root")
 
