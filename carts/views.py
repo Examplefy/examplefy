@@ -7,8 +7,16 @@ from django.contrib.auth.forms import AuthenticationForm
 from billing.forms import GuestCheckoutForm
 from billing.models import UserCheckout, Order, UserAddress
 from django.views.generic.edit import FormMixin
-
+from billing.mixins import CartOrderMixin
+from django.contrib import messages
 # Create your views here.
+from django.conf import settings
+import braintree
+if settings.DEBUG:
+	braintree.Configuration.configure(braintree.Environment.Sandbox,
+	                                  merchant_id=settings.BRAINTREE_MERCHANT,
+	                                  public_key=settings.BRAINTREE_PUBLIC,
+	                                  private_key=settings.BRAINTREE_PRIVATE)
 
 from products.models import Variation
 from carts.models import Cart, CartItem
@@ -117,19 +125,10 @@ class CartView(SingleObjectMixin, View):
 		template = self.template_name
 		return render(request, template, context)
 
-class CheckoutView(FormMixin, DetailView):
+class CheckoutView(CartOrderMixin, FormMixin, DetailView):
 	model = Cart
 	template_name = "carts/checkout.html"
 	form_class = GuestCheckoutForm
-
-	def get_cart(self, *args, **kwargs):
-		cart_id = self.request.session.get("cart_id")
-		if cart_id == None:
-			return None
-		cart = Cart.objects.get(id=cart_id)
-		if cart.items.count() <= 0:
-			return None
-		return cart
 
 	def get_order(self, *args, **kwargs):
 		cart = self.get_cart()
@@ -143,11 +142,19 @@ class CheckoutView(FormMixin, DetailView):
 			new_order = Order.objects.get(id=new_order_id)
 		return new_order
 
-	def get_object(self, *args, **kwargs):
+	def get_cart(self, *args, **kwargs):
 		cart_id = self.request.session.get("cart_id")
 		if cart_id == None:
-			return redirect("cart")
+			return None
 		cart = Cart.objects.get(id=cart_id)
+		if cart.items.count() <= 0:
+			return None
+		return cart
+
+	def get_object(self, *args, **kwargs):
+		cart = self.get_cart()
+		if cart == None:
+			return None
 		return cart
 
 	def get_context_data(self, *args, **kwargs):
@@ -159,6 +166,7 @@ class CheckoutView(FormMixin, DetailView):
 			user_checkout, created = UserCheckout.objects.get_or_create(email=self.request.user.email)
 			user_checkout.user = self.request.user
 			user_checkout.save()
+			context["client_token"] = user_checkout.get_client_token()
 			self.request.session["user_checkout_id"] = user_checkout.id
 		elif not self.request.user.is_authenticated() and user_check_id == None:
 			context["login_form"] = AuthenticationForm()
@@ -167,7 +175,10 @@ class CheckoutView(FormMixin, DetailView):
 			pass
 		if user_check_id != None:
 			user_can_continue = True
-
+			if not self.request.user.is_authenticated(): #Guest user
+				user_checkout_2 = UserCheckout.objects.get(id=user_check_id)
+				context["client_token"] = user_checkout_2.get_client_token()
+		#if self.get_cart() is not None:
 		context["order"] = self.get_order()
 		context["user_can_continue"] = user_can_continue
 		context["form"] = self.get_form()
@@ -190,21 +201,47 @@ class CheckoutView(FormMixin, DetailView):
 	def get(self, request, *args, **kwargs):
 		get_data = super(CheckoutView, self).get(request, *args, **kwargs)
 		cart = self.get_object()
+		if cart == None:
+			return redirect("cart")
 		new_order = self.get_order()
 		user_checkout_id = request.session.get("user_checkout_id")
 		if user_checkout_id != None:
 			user_checkout = UserCheckout.objects.get(id=user_checkout_id)
-			billing_address_id = request.session.get("billing_address_id")
-			shipping_address_id = request.session.get("shipping_address_id")
-
-			if billing_address_id == None or shipping_address_id == None:
+			
+			if new_order.billing_address == None or new_order.shipping_address == None:
 				return redirect("order_address")
-			else:
-				billing_address = UserAddress.objects.get(id=billing_address_id)
-				shipping_address = UserAddress.objects.get(id=shipping_address_id)
-
+			
 			new_order.user = user_checkout
-			new_order.billing_address = billing_address
-			new_order.shipping_address = shipping_address
+			
 			new_order.save()
 		return get_data
+
+class FinalizeCheckoutView(CartOrderMixin, View):
+	def post(self, request, *args, **kwargs):
+		order = self.get_order()
+		order_total = order.order_total
+		nonce = request.POST.get("payment_method_nonce")
+		if nonce:
+			result = braintree.Transaction.sale({
+			    "amount": order_total,
+			    "payment_method_nonce": nonce,
+			    "billing": {
+			    	"postal_code": "%s" %(order.billing_address.zipcode), 
+			    },
+			    "options": {
+			        "submit_for_settlement": True
+			    }
+			})
+			if result.is_success:
+				order_id = result.transaction.id
+				order.mark_completed(order_id=result.transaction.id)
+				messages.success(request, "Thank you for using Examplfy!")
+				del request.session["cart_id"]
+				del request.session["order_id"]
+			else:
+				messages.success(request, "%s" %(result.message))
+				return redirect("checkout")
+			
+		return redirect("order_detail", pk=order.pk)
+	def get(self, request, *args, **kwargs):
+		return redirect("checkout")

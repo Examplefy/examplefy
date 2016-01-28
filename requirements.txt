@@ -1,4 +1,5 @@
 boto==2.39.0
+braintree==3.24.0
 dj-database-url==0.3.0
 Django==1.8
 django-crispy-forms==1.5.2

@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h1>Orders</h1>
+{% for object in object_list %}
+
+<li>{{ object.cart.items.all }}</li><br>
+
+{% endfor %}
+
+{% endblock %}

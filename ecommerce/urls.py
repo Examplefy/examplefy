@@ -2,8 +2,8 @@ from django.conf import settings
 from django.conf.urls import include, url, patterns
 from django.conf.urls.static import static
 from django.contrib import admin
-from carts.views import CartView, ItemCountView, CheckoutView
-from billing.views import AddressSelectFormView, UserAddressCreateView
+from carts.views import CartView, ItemCountView, CheckoutView, FinalizeCheckoutView
+from billing.views import AddressSelectFormView, UserAddressCreateView, OrderList, OrderDetail
 import answers.views
 import os
 
@@ -19,10 +19,13 @@ urlpatterns = [
     url(r'^accounts/', include('registration.backends.default.urls')),
     url(r'^categories/', include('products.urls_categories')),
     url(r'^cart/$', CartView.as_view(), name='cart'),
+    url(r'^orders/$', OrderList.as_view(), name='orders'),
+    url(r'^orders/(?P<pk>\d+)/$', OrderDetail.as_view(), name='order_detail'),
     url(r'^cart/count/$', ItemCountView.as_view(), name='item_count'),
     url(r'^checkout/$', CheckoutView.as_view(), name='checkout'),
     url(r'^checkout/address/$', AddressSelectFormView.as_view(), name='order_address'),
     url(r'^checkout/address/add/$', UserAddressCreateView.as_view(), name='user_address_create'),
+    url(r'^checkout/final/$', FinalizeCheckoutView.as_view(), name='checkout_final'),
     
     # url(r'^answers/', include("answers.urls", namespace='answers')),
     # url(r'^questions/$', questions.views.IndexView.as_view(), name='index'),
