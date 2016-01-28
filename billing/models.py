@@ -1,4 +1,5 @@
 from django.conf import settings
+from django.core.urlresolvers import reverse
 from django.db import models
 from carts.models import Cart
 from django.db.models.signals import pre_save, post_save
@@ -14,34 +15,34 @@ if settings.DEBUG:
 	                                  private_key=settings.BRAINTREE_PRIVATE)
 
 class UserCheckout(models.Model):
-	user = models.ForeignKey(settings.AUTH_USER_MODEL, null=True, blank=True)
-	email = models.EmailField(unique=True)
+	user = models.OneToOneField(settings.AUTH_USER_MODEL, null=True, blank=True) #not required
+	email = models.EmailField(unique=True) #--> required
 	braintree_id = models.CharField(max_length=120, null=True, blank=True)
+
+	def __unicode__(self): #def __str__(self):
+		return self.email
+
 	class Meta:
     		verbose_name = "User Checkout"
     		verbose_name_plural = "User Checkouts"
 
-	def __unicode__(self):
-		return self.email
-
-	@property	
-	def get_braintree_id(self):
+	@property
+	def get_braintree_id(self,):
 		instance = self
 		if not instance.braintree_id:
 			result = braintree.Customer.create({
-	    		"email": instance.email,
+			    "email": instance.email,
 			})
 			if result.is_success:
 				instance.braintree_id = result.customer.id
 				instance.save()
-		print instance.braintree_id
 		return instance.braintree_id
 
 	def get_client_token(self):
 		customer_id = self.get_braintree_id
 		if customer_id:
 			client_token = braintree.ClientToken.generate({
-	    		"customer_id": customer_id
+			    "customer_id": customer_id
 			})
 			return client_token
 		return None
@@ -95,12 +96,16 @@ class Order(models.Model):
 
 	def __unicode__(self):
 		return str(self.cart.id)
+	class Meta:
+		ordering = ["-id"]
 
 	def mark_completed(self, order_id=None):
 		self.status = "paid"
 		if order_id and not self.order_id:
 			self.order_id = order_id
 		self.save()
+	def get_absolute_url(self):
+		return reverse("order_detail", kwargs={"pk": self.pk})
 
 def order_pre_save(sender, instance, *args, **kwargs):
 	shipping_total_price = instance.shipping_total_price

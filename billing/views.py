@@ -18,7 +18,6 @@ class OrderDetail(DetailView):
 			user_checkout = UserCheckout.objects.get(id=user_check_id)
 		except UserCheckout.DoesNotExist:
 			user_checkout = UserCheckout.objects.get(user=request.user)
-			#user_checkout = request.user.user_checkout
 		except:
 			user_checkout = None
 
@@ -30,13 +29,10 @@ class OrderDetail(DetailView):
 
 class OrderList(LoginRequiredMixin, ListView):
 	queryset = Order.objects.all()
-	
+
 	def get_queryset(self):
-		try:
-			user_check_id = self.request.user.id
-			user_checkout = UserCheckout.objects.get(id=user_check_id)
-		except UserCheckout.DoesNotExist:
-			raise Http404
+		user_check_id = self.request.user.id
+		user_checkout = UserCheckout.objects.get(id=user_check_id)
 		return super(OrderList, self).get_queryset().filter(user=user_checkout)
 
 class UserAddressCreateView(CreateView):
