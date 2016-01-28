@@ -1,4 +1,4 @@
-from .models import Variation, Product
+from .models import Variation, Product, Category
 from django import forms
 from django.forms.models import modelformset_factory
 from django.utils.text import slugify
@@ -33,6 +33,10 @@ class ProductFilterForm(forms.Form):
 	# max_price = forms.DecimalField(decimal_places=2, max_digits=12, required=False)
 	# min_price = forms.DecimalField(decimal_places=2, max_digits=12, required=False)
 
+class CategoryForm(forms.Form):
+	categories = forms.ModelChoiceField(queryset=Category.objects.all(), empty_label=None)
+	# shipping_address = forms.ModelChoiceField(queryset=UserAddress.objects.filter(type="shipping"), empty_label=None, widget=forms.RadioSelect)
+
 class ProductModelForm(forms.ModelForm):
 
 	class Meta:
@@ -54,9 +58,17 @@ class ProductModelForm(forms.ModelForm):
 					"placeholder": "Question..."
 				}
 			),	
+			"media": forms.FileInput(
+				attrs={
+					"class": "image"
+				}
+
+			),
+
 			"categories": forms.CheckboxSelectMultiple(
 				attrs={
-					"id": "topic_group"
+					"field_name": "category"
+
 				}
 			),
 		}

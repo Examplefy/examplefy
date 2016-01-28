@@ -210,6 +210,7 @@ class ProductAddView(SellerAccountMixin, SubmitMixin, CreateView):
 	submit_btn = "Ask For Free"
 	submit_btn2 = "Ask Premium"
 	title = "Ask"
+	
 	def form_valid(self, form):
 		# user = self.request.user
 		# form.instance.user = user

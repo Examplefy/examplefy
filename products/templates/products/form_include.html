@@ -12,7 +12,7 @@
 {% csrf_token %}
 {{ form|crispy }}
 <input type='submit' class="btn-default btn-lg" value='{% if submit_btn %}{{ submit_btn }}{% else %}Submit{% endif %}' /><br><br>
-<input type='submit' class="btn-default btn-lg" value='{% if submit_btn2 %}{{ submit_btn2 }}{% endif %} - Recieve your answer within 24 hours.'/>
+<input type='submit' class="btn-default btn-lg" value='{% if submit_btn2 %}{{ submit_btn2 }}{% else %}{% endif %}'/>
 </form>
                   </div>
                 </div>

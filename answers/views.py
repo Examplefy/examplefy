@@ -5,7 +5,7 @@ from django.views.generic.edit import FormMixin
 from django.views.generic.list import ListView
 from django.shortcuts import get_object_or_404
 
-from billing.models import Transaction
+from billing.models import Order
 from .mixins import LoginRequiredMixin
 from products.models import Product
 
@@ -23,7 +23,7 @@ class SellerProductDetailRedirectView(RedirectView):
 
 
 class SellerTransactionListView(SellerAccountMixin, ListView):
-    model = Transaction
+    model = Order
     template_name = "answers/transaction_list_view.html"
 
     def get_queryset(self):
