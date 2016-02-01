@@ -67,7 +67,7 @@ class ProductModelForm(forms.ModelForm):
 
 			),
 
-			"categories": forms.RadioSelect(
+			"categories": forms.ModelChoiceField(
 				attrs={
 					"field_name": "category"
 
