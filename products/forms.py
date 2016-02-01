@@ -67,11 +67,8 @@ class ProductModelForm(forms.ModelForm):
 
 			),
 
-			"categories": forms.ModelChoiceField(
-				attrs={
-					"class": "category"
-
-				}
+			"categories": forms.CheckboxSelectMultiple(
+				
 			),
 		}
 	def clean(self, *args, **kwargs):
