@@ -69,7 +69,7 @@ class ProductModelForm(forms.ModelForm):
 
 			"categories": forms.ModelChoiceField(
 				attrs={
-					"field_name": "category"
+					"class": "category"
 
 				}
 			),
