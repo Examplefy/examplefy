@@ -8,10 +8,12 @@ class VariationInventoryForm(forms.ModelForm):
 	class Meta:
 		model = Variation
 		fields = [
+		"title",
+		"description",
 		"price",
 		"sale_price",
-		"inventory",
 		"active",
+		
 		]
 VariationInventoryFormSet = modelformset_factory(Variation, form=VariationInventoryForm, extra=0)
 PUBLISH_CHOICES = (

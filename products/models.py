@@ -165,6 +165,7 @@ class MyProducts(models.Model):
 class Variation(models.Model):
     product = models.ForeignKey(Product)
     title = models.CharField(max_length=120)
+    description = models.TextField(blank=True, null=True)
     inventory = models.IntegerField(null=True, blank=True) #unlimited amount
     price = models.DecimalField(decimal_places=2, max_digits=20, default=0.99)
     sale_price = models.DecimalField(decimal_places=2, max_digits=20, null=True, blank=True)
