@@ -67,7 +67,7 @@ class ProductModelForm(forms.ModelForm):
 
 			),
 
-			"categories": forms.CheckboxSelectMultiple(
+			"categories": forms.RadioSelect(
 				attrs={
 					"field_name": "category"
 

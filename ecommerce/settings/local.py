@@ -132,14 +132,6 @@ AWS_STORAGE_BUCKET_NAME = 'examplefy'
 S3_URL = 'http://%s.s3.amazonaws.com/' % AWS_STORAGE_BUCKET_NAME
 STATIC_URL = S3_URL
 
-# #BOTO S3 Storage for Production ONLY
-# STATICFILES_STORAGE = 'storages.backends.s3boto.S3BotoStorage'
-# DEFAULT_FILE_STORAGE = 'storages.backends.s3boto.S3BotoStorage'
-
-#Parse database configuration from $DATABASE_URL
-import dj_database_url
-DATABASES['default'] =  dj_database_url.config()
-
 # Honor the 'X-Forwarded-Proto' header for request.is_secure()
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
@@ -151,7 +143,7 @@ STATICFILES_STORAGE = 'whitenoise.django.GzipManifestStaticFilesStorage'
 # STATIC_ROOT = os.path.join(os.path.dirname(BASE_DIR), "static", "static_root")
 
 MEDIA_URL = S3_URL
-MEDIA_ROOT = os.path.join(os.path.dirname(BASE_DIR), "static", "media_root")
+#MEDIA_ROOT = os.path.join(os.path.dirname(BASE_DIR), "static", "media_root")
 
 # TEMPLATE_DIRS = (
 #     os.path.join(BASE_DIR, "templates"),
@@ -187,20 +179,28 @@ TEMPLATE_DIRS = (
 #     #os.path.join(BASE_DIR, "static_in_env"),
 #     #'/var/www/static/',
 # )
+
+
 #Production Code
+#Parse database configuration from $DATABASE_URL
+import dj_database_url
+DATABASES['default'] =  dj_database_url.config()
+# #BOTO S3 Storage for Production ONLY
+STATICFILES_STORAGE = 'storages.backends.s3boto.S3BotoStorage'
+DEFAULT_FILE_STORAGE = 'storages.backends.s3boto.S3BotoStorage'
+
+PROJECT_DIR = os.path.dirname(__file__)
 STATIC_URL = '/static/'
-STATIC_ROOT = os.path.join(BASE_DIR, "static", "static_root")
+STATIC_ROOT = os.path.join(PROJECT_DIR, "static", "static_root")
     
 MEDIA_URL = '/media/'
-MEDIA_ROOT = os.path.join(os.path.dirname(BASE_DIR), "static", "media_root")
+MEDIA_ROOT = os.path.join(PROJECT_DIR, "static", "media_root")
 
-PROTECTED_ROOT = os.path.join(os.path.dirname(BASE_DIR), "static", "protected_root")
+PROTECTED_ROOT = os.path.join(PROJECT_DIR, "static", "protected_root")
 
-STATICFILES_DIRS = (
-    os.path.join(BASE_DIR, "static"),
-    #os.path.join(BASE_DIR, "static_in_env"),
-    #'/var/www/static/',
-)
+STATICFILES_DIRS = (os.path.join(PROJECT_DIR, 'static'),)
+
+
 #Crispy FORM TAGs SETTINGS
 CRISPY_TEMPLATE_PACK = 'bootstrap3'
 

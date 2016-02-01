@@ -43,7 +43,6 @@ class Product(models.Model):
         slug = models.SlugField(blank=True, unique=True)
         embed_code = models.CharField(max_length=500, null=True, blank=True)
         seller = models.ForeignKey(AnswerAccount)
-        # managers = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name="managers_products", blank=True)
         media = models.FileField(blank=True, null=True, upload_to=download_media_location, storage=FileSystemStorage(location=settings.PROTECTED_ROOT))
         categories = models.ManyToManyField('Category', blank=True)
         default = models.ForeignKey('Category', related_name='default_category', null=True, blank=True)
