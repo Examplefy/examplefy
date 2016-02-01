@@ -122,7 +122,7 @@ AWS_SECRET_ACCESS_KEY = os.environ.get('AWS_SECRET_ACCESS_KEY')
 AWS_STORAGE_BUCKET_NAME = 'examplefy'
 
 S3_URL = 'http://%s.s3.amazonaws.com/' % AWS_STORAGE_BUCKET_NAME
-# STATIC_URL = S3_URL
+STATIC_URL = S3_URL
 
 import dj_database_url
 DATABASES['default'] =  dj_database_url.config()
