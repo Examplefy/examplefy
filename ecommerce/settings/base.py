@@ -24,7 +24,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__fil
 SECRET_KEY = 'csqwlmc8s55o($rt6ozh7u+ui9zb-et00w$d90j8$^!nvj41_r'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 
@@ -124,12 +124,12 @@ AWS_STORAGE_BUCKET_NAME = 'examplefy'
 S3_URL = 'http://%s.s3.amazonaws.com/' % AWS_STORAGE_BUCKET_NAME
 STATIC_URL = S3_URL
 
-import dj_database_url
-DATABASES['default'] =  dj_database_url.config()
+# import dj_database_url
+# DATABASES['default'] =  dj_database_url.config()
 
 # #BOTO S3 Storage for Production ONLY
-STATICFILES_STORAGE = 'storages.backends.s3boto.S3BotoStorage'
-DEFAULT_FILE_STORAGE = 'storages.backends.s3boto.S3BotoStorage'
+# STATICFILES_STORAGE = 'storages.backends.s3boto.S3BotoStorage'
+# DEFAULT_FILE_STORAGE = 'storages.backends.s3boto.S3BotoStorage'
 
 STATIC_ROOT = 'staticfiles'
 STATIC_URL = '/static/'
@@ -190,5 +190,8 @@ REGISTRATION_AUTO_LOGIN = True
 SITE_ID = 1
 LOGIN_REDIRECT_URL = '/'
 
-
-
+#Braintree
+BRAINTREE_PUBLIC = "hsjhmqhy73rvpqbv"
+BRAINTREE_PRIVATE = "37b06da7e2cdb493bf0e0ddb1c47cbcd"
+BRAINTREE_MERCHANT = "bgd7scxjbcrz6dd2"
+BRAINTREE_ENVIRONMENT = "Sandbox"
