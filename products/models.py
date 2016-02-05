@@ -33,7 +33,7 @@ class ProductManager(models.Manager):
             return qs #self.get_queryset()
 
 def download_media_location(instance, filename):
-    return "%s/%s" %(instance.slug, filename)
+    return "media/%s/%s" %(instance.slug, filename)
 
 class Product(models.Model):
 	title = models.CharField(max_length=120)
