@@ -43,7 +43,7 @@ class Product(models.Model):
         slug = models.SlugField(blank=True, unique=True)
         embed_code = models.CharField(max_length=500, null=True, blank=True)
         seller = models.ForeignKey(AnswerAccount)
-        media = models.FileField(blank=True, null=True, upload_to=download_media_location, storage=FileSystemStorage(location=settings.STATIC_URL))
+        media = models.FileField(blank=True, null=True, upload_to=download_media_location, storage=FileSystemStorage(location=settings.MEDIA_ROOT))
         categories = models.ManyToManyField('Category', blank=True)
         default = models.ForeignKey('Category', related_name='default_category', null=True, blank=True)
     
@@ -109,7 +109,7 @@ def create_new_thumb(media_path, instance, owner_slug, max_length, max_width):
     thumb = Image.open(media_path)
     size = (max_length, max_width)
     thumb.thumbnail(size, Image.ANTIALIAS)
-    temp_loc = "%s/%s/tmp" %(settings.STATIC_URL, owner_slug)
+    temp_loc = "%s/%s/tmp" %(settings.MEDIA_ROOT, owner_slug)
     if not os.path.exists(temp_loc):
         os.makedirs(temp_loc)
     temp_file_path = os.path.join(temp_loc, filename)

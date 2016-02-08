@@ -221,7 +221,6 @@ header .header-content {
     position: relative;
     width: 100%;
     height: 100%;
-    margin-top: -300px;
     padding: 100px 15px;
     text-align: center;
 }
@@ -258,11 +257,11 @@ header .header-content input {
         min-height: 50%;
 
     }
-
     header .header-content {
         position: absolute;
         top: 100%;
         padding: 0 50px;
+        margin-top: -300px;
         -webkit-transform: translateY(-50%);
         -ms-transform: translateY(-50%);
         transform: translateY(-50%);
