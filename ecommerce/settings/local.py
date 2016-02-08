@@ -25,7 +25,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__fil
 SECRET_KEY = 'csqwlmc8s55o($rt6ozh7u+ui9zb-et00w$d90j8$^!nvj41_r'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 
@@ -147,62 +147,62 @@ STATICFILES_STORAGE = 'whitenoise.django.GzipManifestStaticFilesStorage'
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.8/howto/static-files/
 
-# STATIC_ROOT = 'staticfiles'
-# STATIC_URL = '/static/'
-# STATIC_ROOT = os.path.join(os.path.dirname(BASE_DIR), "static_in_env", "static_root")
+STATIC_ROOT = 'staticfiles'
+STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(os.path.dirname(BASE_DIR), "static_in_env", "static_root")
     
-# MEDIA_URL = '/media/'
-# MEDIA_ROOT = os.path.join(os.path.dirname(BASE_DIR), "static_in_env", "media_root")
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(os.path.dirname(BASE_DIR), "static_in_env", "media_root")
 
-# PROTECTED_ROOT = os.path.join(os.path.dirname(BASE_DIR), "static_in_env", "protected_root")
+PROTECTED_ROOT = os.path.join(os.path.dirname(BASE_DIR), "static_in_env", "protected_root")
 
-# STATICFILES_DIRS = (
-#     os.path.join(BASE_DIR, "static", "static_root"),
-#     #os.path.join(BASE_DIR, "static_in_env"),
-#     #'/var/www/static/',
-# )
+STATICFILES_DIRS = (
+    os.path.join(BASE_DIR, "static", "static_root"),
+    #os.path.join(BASE_DIR, "static_in_env"),
+    #'/var/www/static/',
+)
 
 
 #Production Code
 #Parse database configuration from $DATABASE_URL
-import dj_database_url
-DATABASES['default'] =  dj_database_url.config()
+# import dj_database_url
+# DATABASES['default'] =  dj_database_url.config()
 # #BOTO S3 Storage for Production ONLY
-STATICFILES_STORAGE = 'storages.backends.s3boto.S3BotoStorage'
-DEFAULT_FILE_STORAGE = 'storages.backends.s3boto.S3BotoStorage'
+# STATICFILES_STORAGE = 'storages.backends.s3boto.S3BotoStorage'
+# DEFAULT_FILE_STORAGE = 'storages.backends.s3boto.S3BotoStorage'
 
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
-STATIC_URL = '/static/'
+# STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+# STATIC_URL = '/static/'
 
-STATICFILES_DIRS = (
-    os.path.join(BASE_DIR, 'static', "static_root"),
-)
-# Simplified static file serving.
-# https://warehouse.python.org/project/whitenoise/
+# STATICFILES_DIRS = (
+#     os.path.join(BASE_DIR, 'static', "static_root"),
+# )
+# # Simplified static file serving.
+# # https://warehouse.python.org/project/whitenoise/
 
-# STATICFILES_STORAGE = 'whitenoise.django.GzipManifestStaticFilesStorage'
+# # STATICFILES_STORAGE = 'whitenoise.django.GzipManifestStaticFilesStorage'
 
-# STATIC_ROOT = os.path.join(os.path.dirname(BASE_DIR), "static", "static_root")
+# # STATIC_ROOT = os.path.join(os.path.dirname(BASE_DIR), "static", "static_root")
 
-MEDIA_URL = S3_URL
-MEDIA_ROOT = os.path.join(os.path.dirname(BASE_DIR), "static", "media_root")
-PROTECTED_ROOT = os.path.join(os.path.dirname(BASE_DIR), "static", "protected_root")
+# MEDIA_URL = S3_URL
+# MEDIA_ROOT = os.path.join(os.path.dirname(BASE_DIR), "static", "media_root")
+# PROTECTED_ROOT = os.path.join(os.path.dirname(BASE_DIR), "static", "protected_root")
+
+# # TEMPLATE_DIRS = (
+# #     os.path.join(BASE_DIR, "templates"),
+# # )
+# # here() gives us file paths from the root of the system to the directory
+# # holding the current file.
+# here = lambda * x: os.path.join(os.path.abspath(os.path.dirname(__file__)), *x)
+
+# PROJECT_ROOT = here("..")
+# # root() gives us file paths from the root of the system to whatever
+# # folder(s) we pass it starting at the parent directory of the current file.
+# root = lambda * x: os.path.join(os.path.abspath(PROJECT_ROOT), *x)
 
 # TEMPLATE_DIRS = (
-#     os.path.join(BASE_DIR, "templates"),
+#     root('templates'),
 # )
-# here() gives us file paths from the root of the system to the directory
-# holding the current file.
-here = lambda * x: os.path.join(os.path.abspath(os.path.dirname(__file__)), *x)
-
-PROJECT_ROOT = here("..")
-# root() gives us file paths from the root of the system to whatever
-# folder(s) we pass it starting at the parent directory of the current file.
-root = lambda * x: os.path.join(os.path.abspath(PROJECT_ROOT), *x)
-
-TEMPLATE_DIRS = (
-    root('templates'),
-)
 
 #Crispy FORM TAGs SETTINGS
 CRISPY_TEMPLATE_PACK = 'bootstrap3'
