@@ -52,7 +52,8 @@ class ProductModelForm(forms.ModelForm):
 		widgets = {
 			"description": forms.Textarea(
 				attrs={
-					"placeholder": "Description..."
+					"placeholder": "Description...",
+					"rows": "2"
 				}
 			),
 			"title": forms.TextInput(
@@ -68,6 +69,9 @@ class ProductModelForm(forms.ModelForm):
 			),
 
 			"categories": forms.CheckboxSelectMultiple(
+				attrs={
+
+				}
 				
 			),
 		}

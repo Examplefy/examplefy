@@ -8,14 +8,7 @@
                 <div class="container-fluid">
 
                 <div class="row">
-    				<form method="POST" action="" enctype='multipart/form-data'>
-              <!-- <select name='item' class='form-control variation_select'>
-    {% for instance in object.categories.all %}
-    <option value="{{ vari_obj.id }}">{{ instance }}</option>
-  </select> -->
-    <!-- {% endfor %} -->
-{% csrf_token %}
-{{ form|crispy }}
+    				<form method="POST" action="" enctype='multipart/form-data'>{% csrf_token %}{{ form|crispy }}
 <input type='submit' class="btn-default btn-lg" value='{% if submit_btn %}{{ submit_btn }}{% else %}Submit{% endif %}' /><br><br>
 <input type='submit' class="btn-default btn-lg" value='{% if submit_btn2 %}{{ submit_btn2 }}{% else %}{% endif %}'/>
 </form>

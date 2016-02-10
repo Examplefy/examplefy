@@ -243,7 +243,6 @@ header .header-content .header-content-inner p {
     font-weight: 300;
     color: rgba(255,255,255,.7);
 }
-
 /* CAL: Adding to allow forms to be put into a header-content-inner */
 header .header-content .header-content-inner input {
   color: black;

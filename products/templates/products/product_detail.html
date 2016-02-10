@@ -104,7 +104,7 @@ $("#submit-btn").click(function(event){
 
 {% if object.thumbnail_set.all.count > 0 %}
 {% for img in object.thumbnail_set.all %}
-<a href="{{ object.get_download }}?preview=True"><img src="{{ img.media.url }}" alt="Question Image" class='img-responsive' /></a><br>
+<a href="{{ object.get_download }}?preview=True"><img src="{% if img.media %}{{ img.media.url }}{% else %}{% endif %}" class='img-responsive' /></a><br>
 
 {% endfor %}
 {% endif %}

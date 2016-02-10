@@ -8,11 +8,11 @@ from django.views.generic.detail import DetailView
 from django.views.generic import View, TemplateView
 from django.http import Http404, HttpResponse, HttpResponseRedirect, JsonResponse
 from django.views.generic.list import ListView
-from django.views.generic.edit import CreateView, UpdateView
+from django.views.generic.edit import CreateView, UpdateView, FormView
 from django.contrib.auth.models import User
 from django.db.models import Q
 from django.utils import timezone
-from .forms import VariationInventoryFormSet, ProductModelForm, ProductFilterForm
+from .forms import VariationInventoryFormSet, ProductModelForm, ProductFilterForm, CategoryForm
 from django.contrib import messages
 from answers.mixins import SellerAccountMixin
 from products.mixins import ProductManagerMixin
@@ -202,7 +202,7 @@ class ProductDownloadView(MultiSlugMixin, DetailView):
 			messages.success(request, "Please login to continue.")
 			return redirect("products")
 
-class ProductAddView(SellerAccountMixin, SubmitMixin, CreateView):
+class ProductAddView(ProductManagerMixin, SubmitMixin, CreateView):
 	model = Product
 	form_class = ProductModelForm
 	template_name = "products/form.html"
@@ -211,13 +211,32 @@ class ProductAddView(SellerAccountMixin, SubmitMixin, CreateView):
 	submit_btn2 = "Ask Premium"
 	title = "Ask"
 	
-	def form_valid(self, form):
+	def get_form(self, *args, **kwargs):
+		form = super(ProductAddView, self).get_form(*args, **kwargs)
+		form.fields["categories"].queryset = Category.objects.all() 
+		return form
+
+	def form_valid(self, form, *args, **kwargs):
 		# user = self.request.user
 		# form.instance.user = user
-		seller = self.get_account()
-		form.instance.seller = seller
+		#seller = self.get_account()
+		#form.instance.seller = seller
 		valid_data = super(ProductAddView, self).form_valid(form)
 		return valid_data
+
+class CategorySelectFormView(FormView):
+	form_class = CategoryForm
+	template_name = "products/form.html"
+
+	def get_form(self, *args, **kwargs):
+		formcat = super(CategorySelectFormView, self).get_form(*args, **kwargs)
+		# form.fields("categories").queryset = Category.objects.filter(
+		# 	# user=self.request.user
+		# 	) 
+		return formcat
+	def form_valid(self, *args, **kwargs):
+		formcat = super(CategorySelectFormView, self).form_valid(*args, **kwargs)
+		return formcat
 
 class ProductUpdateView(ProductManagerMixin, SubmitMixin, MultiSlugMixin, UpdateView):
 	model = Product
