@@ -42,7 +42,7 @@ class Product(models.Model):
 	active = models.BooleanField(default=True)
         slug = models.SlugField(blank=True, unique=True)
         embed_code = models.CharField(max_length=500, null=True, blank=True)
-        seller = models.ForeignKey(AnswerAccount)
+        seller = models.ForeignKey(AnswerAccount, null=True)
         media = models.FileField(blank=True, null=True, upload_to=download_media_location, storage=FileSystemStorage(location=settings.MEDIA_URL))
         categories = models.ManyToManyField('Category', blank=True)
         default = models.ForeignKey('Category', related_name='default_category', null=True, blank=True)

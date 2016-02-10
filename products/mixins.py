@@ -5,16 +5,17 @@ from django.http import Http404
 from django.shortcuts import get_object_or_404
 from answers.mixins import SellerAccountMixin
 
-class ProductManagerMixin(SellerAccountMixin, object):
+class ProductManagerMixin(object):
 	def get_object(self, *args, **kwargs):
-		seller = self.get_account()
+		# seller = self.get_account()
 		obj = super(ProductManagerMixin, self).get_object(*args, **kwargs)
-		try:
-			obj.seller  == seller
-		except:
-			raise Http404
+		return obj
+		# try:
+		# 	obj.seller  == seller
+		# except:
+		# 	raise Http404
 
-		if obj.seller == seller:
-			return obj
-		else:
-			raise Http404
+		# if obj.seller == seller:
+		# 	return obj
+		# else:
+		# 	raise Http404

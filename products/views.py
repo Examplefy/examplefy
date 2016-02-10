@@ -202,7 +202,7 @@ class ProductDownloadView(MultiSlugMixin, DetailView):
 			messages.success(request, "Please login to continue.")
 			return redirect("products")
 
-class ProductAddView(SellerAccountMixin, SubmitMixin, CreateView):
+class ProductAddView(ProductManagerMixin, SubmitMixin, CreateView):
 	model = Product
 	form_class = ProductModelForm
 	template_name = "products/form.html"
@@ -214,8 +214,8 @@ class ProductAddView(SellerAccountMixin, SubmitMixin, CreateView):
 	def form_valid(self, form, *args, **kwargs):
 		# user = self.request.user
 		# form.instance.user = user
-		seller = self.get_account()
-		form.instance.seller = seller
+		# seller = self.get_account()
+		# form.instance.seller = seller
 		valid_data = super(ProductAddView, self).form_valid(form)
 		return valid_data
 
