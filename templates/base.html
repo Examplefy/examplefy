@@ -49,9 +49,10 @@
 
     {% include "javascript.html" %}
     <script>
-    $(document).ready(function(){
+    $(document).ready(function(){ 
         {% block jquery %}
-        {% endblock %}
+        
+        {% endblock jquery%}
     });
     </script>
     

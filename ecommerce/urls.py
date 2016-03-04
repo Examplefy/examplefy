@@ -16,6 +16,7 @@ urlpatterns = [
 
     url(r'^admin/', include(admin.site.urls)),
     url(r'^products/', include('products.urls')),
+    url(r'^topics/', include('tags.urls', namespace='tags')),
     url(r'^accounts/', include('registration.backends.default.urls')),
     url(r'^categories/', include('products.urls_categories')),
     url(r'^cart/$', CartView.as_view(), name='cart'),
@@ -26,6 +27,7 @@ urlpatterns = [
     url(r'^checkout/address/$', AddressSelectFormView.as_view(), name='order_address'),
     url(r'^checkout/address/add/$', UserAddressCreateView.as_view(), name='user_address_create'),
     url(r'^checkout/final/$', FinalizeCheckoutView.as_view(), name='checkout_final'),
+    #url(r'^payments/', include('djstripe.urls', namespace="djstripe")),
     
     # url(r'^answers/', include("answers.urls", namespace='answers')),
     # url(r'^questions/$', questions.views.IndexView.as_view(), name='index'),

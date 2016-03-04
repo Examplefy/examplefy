@@ -1,8 +1,7 @@
 {% extends "base.html" %}
-
+{% include "javascript.html"}
 <script>
 {% block jquery %}
-
 function update_iframe_size(){
 	var parent_id = $("iframe").parent().attr("id");
 	if (parent_id == "main_video") {
@@ -144,6 +143,8 @@ $("#submit-btn").click(function(event){
 	{% endif %}
 	<br/>
 <input id='submit-btn' type='submit' value='Add to Cart' class='btn btn-primary' />
+<input id='submit_btn2' type='submit' value='Buy Now' class='btn btn-primary' />
+<div id="dialog-confirm" title="Confirm Purchase"></div>
 </form>
 
 <br/>

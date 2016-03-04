@@ -17,6 +17,8 @@ from django.contrib import messages
 from answers.mixins import SellerAccountMixin
 from products.mixins import ProductManagerMixin
 from django_filters import FilterSet, CharFilter, NumberFilter
+from tags.models import Tag
+#from analytics.models import TagView
 import json
 from ecommerce.mixins import (
             LoginRequiredMixin,
@@ -217,6 +219,14 @@ class ProductAddView(ProductManagerMixin, SubmitMixin, CreateView):
 		# seller = self.get_account()
 		# form.instance.seller = seller
 		valid_data = super(ProductAddView, self).form_valid(form)
+		#form.instance.managers.add(user)
+		tags = form.cleaned_data.get("tags")
+		if tags:
+			tags_list = tags.split(",")
+			for tag in tags_list:
+				if not tag == " ":
+					new_tag = Tag.objects.get_or_create(title=str(tag).strip())[0]
+					new_tag.products.add(form.instance)
 		return valid_data
 
 class CategorySelectFormView(FormView):
@@ -239,7 +249,33 @@ class ProductUpdateView(ProductManagerMixin, SubmitMixin, MultiSlugMixin, Update
 	template_name = "products/form.html"
 	success_url = "/products/"
 	submit_btn = "Update"
+	submit_btn2 = "Delete"
 	title = "Update"
+
+	def get_initial(self):
+		initial = super(ProductUpdateView, self).get_initial()
+		tags = self.get_object().tag_set.all()
+		initial["tags"] = ", ".join([x.title for x in tags])
+		"""
+		tag_list = []
+		for x in tags:
+			tags_list.append(x.title)
+		"""
+		
+		return initial
+
+	def form_valid(self, form, *args, **kwargs):
+		valid_data = super(ProductUpdateView, self).form_valid(form)
+		tags = form.cleaned_data.get("tags")
+		obj = self.get_object()
+		obj.tag_set.clear()
+		if tags:
+			tags_list = tags.split(",")
+			for tag in tags_list:
+				if not tag == " ":
+					new_tag = Tag.objects.get_or_create(title=str(tag).strip())[0]
+					new_tag.products.add(self.get_object())
+		return valid_data
 
 class ProductDetailView(MultiSlugMixin, DetailView):
 	model = Product
@@ -247,6 +283,11 @@ class ProductDetailView(MultiSlugMixin, DetailView):
 		context = super(ProductDetailView, self).get_context_data(*args, **kwargs)
 		instance = self.get_object()
 		context["related"] = Product.objects.get_related(instance)
+		
+		# tags = instance.tag_set.all()
+		# for tag in tags:
+		# 	new_view = TagView.objects.add_count(self.request.user, tag)
+		
 		return context
 
 def product_detail_view_func(request, id):

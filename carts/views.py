@@ -12,13 +12,14 @@ from django.contrib import messages
 # Create your views here.
 from django.conf import settings
 import braintree
+import datetime
 if settings.DEBUG:
 	braintree.Configuration.configure(braintree.Environment.Sandbox,
 	                                  merchant_id=settings.BRAINTREE_MERCHANT,
 	                                  public_key=settings.BRAINTREE_PUBLIC,
 	                                  private_key=settings.BRAINTREE_PRIVATE)
 
-from products.models import Variation
+from products.models import Variation, Product, MyProducts
 from carts.models import Cart, CartItem
 
 class ItemCountView(View):
@@ -124,6 +125,119 @@ class CartView(SingleObjectMixin, View):
 		}
 		template = self.template_name
 		return render(request, template, context)
+
+class CheckoutAjaxView(CartOrderMixin, FormMixin, DetailView):
+	model = Cart
+	template_name = "carts/checkout.html"
+	form_class = GuestCheckoutForm
+
+	def get_order(self, *args, **kwargs):
+		cart = self.get_cart()
+		if cart is None:
+			return None
+		new_order_id = self.request.session.get("order_id")
+		if new_order_id is None:
+			new_order = Order.objects.create(cart=cart)
+			self.request.session["order_id"] = new_order.id
+		else:
+			new_order = Order.objects.get(id=new_order_id)
+		return new_order
+
+	def get_cart(self, *args, **kwargs):
+		cart_id = self.request.session.get("cart_id")
+		if cart_id == None:
+			return None
+		cart = Cart.objects.get(id=cart_id)
+		if cart.items.count() <= 0:
+			return None
+		return cart
+
+	def get_object(self, *args, **kwargs):
+		cart = self.get_cart()
+		if cart == None:
+			return None
+		return cart
+
+	def get_context_data(self, *args, **kwargs):
+		context = super(CheckoutAjaxView, self).get_context_data(*args, **kwargs)
+		user_can_continue = False
+		user_check_id = self.request.session.get("user_checkout_id")
+		if self.request.user.is_authenticated():
+			user_can_continue = True
+			user_checkout, created = UserCheckout.objects.get_or_create(email=self.request.user.email)
+			user_checkout.user = self.request.user
+			user_checkout.save()
+			context["client_token"] = user_checkout.get_client_token()
+			self.request.session["user_checkout_id"] = user_checkout.id
+		elif not self.request.user.is_authenticated() and user_check_id == None:
+			context["login_form"] = AuthenticationForm()
+			context["next_url"] = self.request.build_absolute_uri()
+		else:
+			pass
+		if user_check_id != None:
+			user_can_continue = True
+			if not self.request.user.is_authenticated(): #Guest user
+				user_checkout_2 = UserCheckout.objects.get(id=user_check_id)
+				context["client_token"] = user_checkout_2.get_client_token()
+		#if self.get_cart() is not None:
+		context["order"] = self.get_order()
+		context["user_can_continue"] = user_can_continue
+		context["form"] = self.get_form()
+		return context
+
+	def post(self, request, *args, **kwargs):
+		if request.is_ajax():
+			self.object = self.get_object()
+			form = self.get_form()
+		if form.is_valid():
+			email = form.cleaned_data.get("email")
+			user_checkout, created = UserCheckout.objects.get_or_create(email=email)
+			request.session["user_checkout_id"] = user_checkout.id
+			return self.form_valid(form)
+		else:
+			return self.form_invalid(form)
+
+			# user = request.user
+			# product_id = request.POST.get("product_id")
+			# exists = Product.objects.filter(id=product_id).exists()
+			# if not exists:
+			# 	return JsonResponse({}, status=404)
+
+			# try:
+			# 	product_obj = Product.object.get(id=product_id)
+			# except:
+			# 	product_obj = Product.objects.filter(id=product_id).first()
+
+			# my_products = MyProducts.objects.get_or_create(user=request.user)[0]
+			# my_products.products.add(product_obj)
+
+			data = {
+				"works": True,
+				"time": datetime.datetime.now(),
+			}
+			return JsonResponse(data)
+		raise Http404
+
+	def get_success_url(self):
+		return reverse("checkout")
+
+	def get(self, request, *args, **kwargs):
+		get_data = super(CheckoutView, self).get(request, *args, **kwargs)
+		cart = self.get_object()
+		if cart == None:
+			return redirect("cart")
+		new_order = self.get_order()
+		user_checkout_id = request.session.get("user_checkout_id")
+		if user_checkout_id != None:
+			user_checkout = UserCheckout.objects.get(id=user_checkout_id)
+			
+			if new_order.billing_address == None or new_order.shipping_address == None:
+				return redirect("order_address")
+			
+			new_order.user = user_checkout
+			
+			new_order.save()
+		return get_data
 
 class CheckoutView(CartOrderMixin, FormMixin, DetailView):
 	model = Cart

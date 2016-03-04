@@ -64,9 +64,11 @@ INSTALLED_APPS = (
     "products",
     "carts",
     "billing",
+    "tags",
     "django_filters",
     "storages",
     'gunicorn',
+    "djstripe",
 )
 
 MIDDLEWARE_CLASSES = (
@@ -144,8 +146,8 @@ SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 STATICFILES_STORAGE = 'whitenoise.django.GzipManifestStaticFilesStorage'
 
 '''Static storage'''
-# # Static files (CSS, JavaScript, Images)
-# # https://docs.djangoproject.com/en/1.8/howto/static-files/
+# Static files (CSS, JavaScript, Images)
+# https://docs.djangoproject.com/en/1.8/howto/static-files/
 
 # STATIC_ROOT = 'staticfiles'
 # STATIC_URL = '/static/'
@@ -165,8 +167,8 @@ STATICFILES_STORAGE = 'whitenoise.django.GzipManifestStaticFilesStorage'
 
 #Production Code
 #Parse database configuration from $DATABASE_URL
-import dj_database_url
-DATABASES['default'] =  dj_database_url.config()
+#import dj_database_url
+#DATABASES['default'] =  dj_database_url.config()
 # #BOTO S3 Storage for Production ONLY
 STATICFILES_STORAGE = 'storages.backends.s3boto.S3BotoStorage'
 DEFAULT_FILE_STORAGE = 'storages.backends.s3boto.S3BotoStorage'
@@ -219,3 +221,43 @@ BRAINTREE_PUBLIC = "hsjhmqhy73rvpqbv"
 BRAINTREE_PRIVATE = "37b06da7e2cdb493bf0e0ddb1c47cbcd"
 BRAINTREE_MERCHANT = "bgd7scxjbcrz6dd2"
 BRAINTREE_ENVIRONMENT = "Sandbox"
+
+#Stripe
+STRIPE_PUBLIC_KEY = os.environ.get("STRIPE_PUBLIC_KEY", "pk_test_lLFAbBOc7bHtpxq5QnIp94xh")
+STRIPE_SECRET_KEY = os.environ.get("STRIPE_SECRET_KEY", "sk_test_hWkIxMrsvR3IGJIRKLRy1Rts")
+
+CURRENCIES = getattr(settings, "DJSTRIPE_CURRENCIES", (
+    ('usd', 'U.S. Dollars',),
+    ('gbp', 'Pounds (GBP)',),
+    ('eur', 'Euros',))
+)
+
+DJSTRIPE_PLANS = {
+    "one-time": {
+        "stripe_plan_id": "one-time",
+        "name": "Examplefy ($0.99)",
+        "description": "A one-time buy to Examplefy",
+        "price": 99,  # $0.99
+        "currency": "usd",
+        "interval": "day"
+
+    },
+    "monthly": {
+        "stripe_plan_id": "pro-monthly",
+        "name": "Examplefy Pro ($4.99/month)",
+        "description": "The monthly subscription plan to Examplefy",
+        "price": 499,  # $4.99
+        "currency": "usd",
+        "interval": "month",
+        "interval_count": 1
+    },
+    "yearly": {
+        "stripe_plan_id": "pro-yearly",
+        "name": "Examplefy Prime ($49/year)",
+        "description": "The annual subscription plan to Examplefy",
+        "price": 4900,  # $49.00
+        "currency": "usd",
+        "interval": "year",
+        "interval_count": 1
+    }
+}

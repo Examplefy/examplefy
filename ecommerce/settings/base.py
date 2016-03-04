@@ -59,6 +59,11 @@ INSTALLED_APPS = (
     'registration',
     #my apps
     'newsletter',
+    'answers',
+    "products",
+    "carts",
+    "billing",
+    "tags",
 )
 
 MIDDLEWARE_CLASSES = (
@@ -124,12 +129,12 @@ AWS_STORAGE_BUCKET_NAME = 'examplefy'
 S3_URL = 'http://%s.s3.amazonaws.com/' % AWS_STORAGE_BUCKET_NAME
 STATIC_URL = S3_URL
 
-# import dj_database_url
-# DATABASES['default'] =  dj_database_url.config()
+import dj_database_url
+DATABASES['default'] =  dj_database_url.config()
 
-# #BOTO S3 Storage for Production ONLY
-# STATICFILES_STORAGE = 'storages.backends.s3boto.S3BotoStorage'
-# DEFAULT_FILE_STORAGE = 'storages.backends.s3boto.S3BotoStorage'
+#BOTO S3 Storage for Production ONLY
+STATICFILES_STORAGE = 'storages.backends.s3boto.S3BotoStorage'
+DEFAULT_FILE_STORAGE = 'storages.backends.s3boto.S3BotoStorage'
 
 STATIC_ROOT = 'staticfiles'
 STATIC_URL = '/static/'

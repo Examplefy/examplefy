@@ -3,8 +3,11 @@ from django.core.urlresolvers import reverse
 from django.db import models
 from carts.models import Cart
 from django.db.models.signals import pre_save, post_save
+from model_utils.models import TimeStampedModel
 from decimal import Decimal
 import braintree
+import stripe
+
 # Create your models here.
 
 from products.models import Product
@@ -25,7 +28,6 @@ class UserCheckout(models.Model):
 	class Meta:
     		verbose_name = "User Checkout"
     		verbose_name_plural = "User Checkouts"
-
 	@property
 	def get_braintree_id(self,):
 		instance = self
@@ -114,4 +116,3 @@ def order_pre_save(sender, instance, *args, **kwargs):
 	instance.order_total = order_total
 
 pre_save.connect(order_pre_save, sender=Order)
-

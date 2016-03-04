@@ -40,7 +40,9 @@ class CategoryForm(forms.Form):
 	# shipping_address = forms.ModelChoiceField(queryset=UserAddress.objects.filter(type="shipping"), empty_label=None, widget=forms.RadioSelect)
 
 class ProductModelForm(forms.ModelForm):
-
+	tags = forms.CharField(label='Topics', required=False)
+	#categories = forms.ModelChoiceField(label='Categories', required=False)
+	#publish = forms.ChoiceField(widget=forms.RadioSelect, choices=PUBLISH_CHOICES, required=False)
 	class Meta:
 		model = Product
 		fields = [

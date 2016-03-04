@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+
+
+{% block content %}
+<br>
+<br>
+<br>
+<br>
+
+<div class='col-sm-12'>
+
+<h1>All Topics </h1>
+
+<ul>
+{% for instance in object_list %}
+	
+            <div class="panel panel-default">
+              <div class="panel-heading"><h3><a href='{{ instance.title }}'>{{ instance.title }}</a> ({{ instance.products.count }} answers{% if instance.products.count > 1 %}s{% endif %})</h3></div>
+          </div>
+{% empty %}
+	<li>No Topics yet</li>
+{% endfor %}
+</ul>
+</div>
+
+{% endblock %}

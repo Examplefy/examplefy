@@ -7,7 +7,24 @@ from .models import UserAddress, UserCheckout, Order
 from django.contrib import messages
 from django.views.generic.detail import DetailView
 from .mixins import CartOrderMixin, LoginRequiredMixin
+
 # Create your views here.
+
+class AccountView(LoginRequiredMixin):
+    """Shows account details including customer and subscription details."""
+    template_name = "djstripe/account.html"
+
+    def get_context_data(self, *args, **kwargs):
+        context = super(AccountView, self).get_context_data(**kwargs)
+        customer, created = Order.get_or_create(
+            subscriber=subscriber_request_callback(self.request))
+        context['customer'] = customer
+        try:
+            context['subscription'] = customer.current_subscription
+        except CurrentSubscription.DoesNotExist:
+            context['subscription'] = None
+        context['plans'] = PLAN_LIST
+        return context
 
 class OrderDetail(DetailView):
 	model = Order
